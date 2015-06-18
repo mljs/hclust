@@ -48,6 +48,8 @@ function agnes(data, sim, kind) {
                     min = Math.min(dis, min);
                 }
             }
+            T[level] = {};
+            T[level].d = min;
             var dmin = d[min.toFixed(4)];
             var clustered = [];
             var aux,
@@ -67,30 +69,30 @@ function agnes(data, sim, kind) {
                 clustered.push(aux);
             }
             dataList = [];
-            T[level] = [];
+            T[level].cl = [];
             for (var z = 0; z < clustered.length; z++) {
                 dataList = dataList.concat(clustered[z]);
                 aux = [];
                 for (var zz = 0; zz < clustered[z].length; zz++) {
                     aux = aux.concat(data[clustered[z][zz]]);
                 }
-                T[level].push(aux);
+                T[level].cl.push(aux);
             }
             for (var c = 0; c < k; c++) {
                 if (dataList.indexOf(c) === -1) {
-                    T[level].push(data[c]);
+                    T[level].cl.push(data[c]);
                 }
             }
             //console.log(T);
             console.log('');
-            data = T[level].concat();
+            data = T[level].cl.concat();
             k = data.length;
             level++;
         }
         return T;
     }
     else
-        return {1:data};
+        return {1:{d:0, cl:data}};
 }
 
 /**
@@ -99,7 +101,7 @@ function agnes(data, sim, kind) {
  * @param {string} sim - The kind of distance or similarity to use between vectors
  * @returns {json} returns the hierarchical clustering tree by levels
  */
-function diana(data, sim) {
+function diana(data, sim, kind) {
     var disFun= distance[sim];
     if (!disFun)
         throw new TypeError('Invalid distance function');
@@ -114,6 +116,7 @@ function diana(data, sim) {
         //noinspection UnnecessaryLocalVariableJS
         var goal = k;
         do {
+            dianaT[level] = {};
             if (data[0] === undefined || data[0][0] === undefined)
                 break;
             M = 0;
@@ -148,8 +151,9 @@ function diana(data, sim) {
                 data[clId].splice(dist.p, 1);
                 dist = diff(data[clId], sG, disFun);
             }
+            dianaT[level].d = D(sG, data[0], sim, kind);
             data = data.concat([sG]);
-            dianaT[level] = JSON.parse(JSON.stringify(data));
+            dianaT[level].cl = JSON.parse(JSON.stringify(data));
             level++;
             k = data.length;
         }
@@ -157,7 +161,7 @@ function diana(data, sim) {
         return dianaT;
     }
     else {
-        return {1:data};
+        return {1:{d:0, cl:data}};
     }
 }
 
@@ -318,7 +322,7 @@ Hierarchical.prototype.cluster = function (data) {
             this.tree = agnes(aux, this.options.sim, this.options.kind);
             break;
         case 'diana':
-            this.tree = diana(data, this.options.sim);
+            this.tree = diana(data, this.options.sim, this.options.kind);
             break;
         case 'birch':
             break;
@@ -338,7 +342,7 @@ Hierarchical.prototype.cluster = function (data) {
  */
 Hierarchical.prototype.getLevel = function (L) {
     if (L in this.tree)
-        return this.tree[L];
+        return this.tree[L].cl;
     else
         throw new RangeError('Non-existent level');
 };
