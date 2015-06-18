@@ -1,2 +1,2 @@
-module.exports = exports = require('./hierarchical');
+module.exports = exports = require('./hclust');
 //exports.foo = require('./foo');

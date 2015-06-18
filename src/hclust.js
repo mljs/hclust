@@ -58,6 +58,7 @@ function agnes(data, sim, kind) {
                 aux = dmin.shift();
                 for (var q = dmin.length - 1; q >= 0; q--) {
                     inter = dmin[q].filter(function(n) {
+                        //noinspection JSReferencingMutableVariableFromClosure
                         return aux.indexOf(n) != -1
                     });
                     if (inter.length > 0) {
@@ -99,6 +100,7 @@ function agnes(data, sim, kind) {
  * Splits the higher level clusters
  * @param {Array <Array <number>>} data - Array of points to be clustered
  * @param {string} sim - The kind of distance or similarity to use between vectors
+ * @param {string} kind -  kind of similarity to use between clusters
  * @returns {json} returns the hierarchical clustering tree by levels
  */
 function diana(data, sim, kind) {
@@ -296,7 +298,7 @@ var defaultOptions = {
  * @param {json} options - clustering options
  * @constructor
  */
-function Hierarchical(options) {
+function Hclust(options) {
     options = options || {};
     this.options = {};
     for (var o in defaultOptions) {
@@ -312,7 +314,7 @@ function Hierarchical(options) {
  * Creates the tree based in the data
  * @param {Array <Array <number>>} data - Array of points to be clustered
  */
-Hierarchical.prototype.cluster = function (data) {
+Hclust.prototype.cluster = function (data) {
     var l = data.length;
     switch (this.options.name) {
         case 'agnes':
@@ -340,7 +342,7 @@ Hierarchical.prototype.cluster = function (data) {
  * @param {number} L - level of the hierarchical tree
  * @returns {Array} clusters at the L level
  */
-Hierarchical.prototype.getLevel = function (L) {
+Hclust.prototype.getLevel = function (L) {
     if (L in this.tree)
         return this.tree[L].cl;
     else
@@ -351,7 +353,7 @@ Hierarchical.prototype.getLevel = function (L) {
  * Let's have a JSON to recreate the model
  * @returns {json}
  */
-Hierarchical.prototype.export = function () {
+Hclust.prototype.export = function () {
     var model = {
         name: 'HCL'
     };
@@ -361,13 +363,13 @@ Hierarchical.prototype.export = function () {
 };
 
 /**
- * Recreates a Hierarchical based in the exported model
+ * Recreates a Hclust based in the exported model
  * @param {json} model
- * @returns {Hierarchical}
+ * @returns {Hclust}
  */
-Hierarchical.load = function (model) {
+Hclust.load = function (model) {
     if (model.name === 'HCL') {
-        var HCL = new Hierarchical(model.options);
+        var HCL = new Hclust(model.options);
         HCL.tree = model.tree;
         return HCL;
     } else {
@@ -375,4 +377,4 @@ Hierarchical.load = function (model) {
     }
 };
 
-module.exports = Hierarchical;
+module.exports = Hclust;

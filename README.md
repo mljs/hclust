@@ -20,9 +20,9 @@ Generate a clustering hierarchy.
 * [CURE](http://www.cs.bu.edu/fac/gkollios/ada05/LectNotes/guha98cure.pdf) (Clustering Using REpresentatives):
 * [CHAMELEON](http://www.google.ch/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CCQQFjAAahUKEwj6t4n_sZbGAhXDaxQKHXCLCmQ&url=http%3A%2F%2Fglaros.dtc.umn.edu%2Fgkhome%2Ffetch%2Fpapers%2FchameleonCOMPUTER99.pdf&ei=kDqBVfqvKsPXUfCWqqAG&usg=AFQjCNEYcGqCxN5N_GlP4Z__UF09aHegQg&sig2=9JkxZ5VS7iDbiJT-imX5Pg&bvm=bv.96041959,d.d24&cad=rja) 
 
-### new Hierarchical([options])
+### new Hclust([options])
 
-Creates a new Hierarchical instance with the given parameters or the default ones.
+Creates a new Hclust instance with the given parameters or the default ones.
 
 __Arguments__
 * `options` - Object with options for the algorithm
@@ -78,7 +78,7 @@ __Example__
 var agnesData = [[2,6], [3,4], [3,8], [4,5], [4,7], [6,2], [7,2], [7,4], [8,4], [8,5]];
 
 // creates the hierarchical tree
-var HC = new hierarchical();
+var HC = new Hclust();
 HC.cluster(agnesData);
 
 // the array of clusters
@@ -97,11 +97,11 @@ Exports the model to a JSON object that can be written to disk and reloaded
 
 ### load(model)
 
-Returns a new Hierarchical instance based on the `model`.
+Returns a new Hclust instance based on the `model`.
 
 __Arguments__
 
-* `model` - JSON object generated with `hierarchical.export()`
+* `model` - JSON object generated with `Hclust.export()`
 
 ## Test
 
