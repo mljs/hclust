@@ -32,8 +32,8 @@ __Options__
 * `name`: The name of the hierarchical cluster, it could be `agnes`(default), `diana`, `birch`, `cure` or `chameleon`.
 * `sim`: The kind of distance or similarity to use between vectors, the default is `euclidean`, but for a complete list see [ml-distance](https://github.com/mljs/distance).
 * `kind`: The kind of similarity to use between clusters, it could be `single`(default), `complete`, `average`, `centroid` or `ward`
-__Example__
 
+__Example__
 ```js
 var HCL = require('ml-hclust');
 
