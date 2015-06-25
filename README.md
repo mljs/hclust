@@ -14,94 +14,74 @@ Hierarchical clustering algorithms in JavaScript
 ## Methods
 Generate a clustering hierarchy.
 
-* [AGNES](http://dx.doi.org/10.1002/9780470316801.ch5) (AGglomerative NESting): Continuously merge nodes that have the least dissimilarity.
-* [DIANA](http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0470276800.html) (Divisive ANAlysis): The process starts at the root with all the points as one cluster and recursively splits the higher level clusters to build the dendrogram.
-* [BIRCH](http://www.cs.sfu.ca/CourseCentral/459/han/papers/zhang96.pdf) (Balanced Iterative Reducing and Clustering using Hierarchies): Incrementally construct a CF (Clustering Feature) tree, a hierarchical data structure for multiphase clustering
-* [CURE](http://www.cs.bu.edu/fac/gkollios/ada05/LectNotes/guha98cure.pdf) (Clustering Using REpresentatives):
-* [CHAMELEON](http://www.google.ch/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CCQQFjAAahUKEwj6t4n_sZbGAhXDaxQKHXCLCmQ&url=http%3A%2F%2Fglaros.dtc.umn.edu%2Fgkhome%2Ffetch%2Fpapers%2FchameleonCOMPUTER99.pdf&ei=kDqBVfqvKsPXUfCWqqAG&usg=AFQjCNEYcGqCxN5N_GlP4Z__UF09aHegQg&sig2=9JkxZ5VS7iDbiJT-imX5Pg&bvm=bv.96041959,d.d24&cad=rja) 
+### new agnes(data,[options])
 
-### new Hclust([options])
-
-Creates a new Hclust instance with the given parameters or the default ones.
-
-__Arguments__
-* `options` - Object with options for the algorithm
-
-__Options__
-
-* `name`: The name of the hierarchical cluster, it could be `agnes`(default), `diana`, `birch`, `cure` or `chameleon`.
-* `sim`: The kind of distance or similarity to use between vectors, the default is `euclidean`, but for a complete list see [ml-distance](https://github.com/mljs/distance).
-* `kind`: The kind of similarity to use between clusters, it could be `single`(default), `complete`, `average`, `centroid` or `ward`
-
-__Example__
-```js
-var HCL = require('ml-hclust');
-
-// actually this are the default values
-var options = {
-    name: 'agnes',
-    sim: 'euclidean',
-    kind: 'single'
-};
-
-var agnes = new HCL(options);
-```
-
-### cluster(data)
-
-Creates the tree based in the `data` points.
+[AGNES](http://dx.doi.org/10.1002/9780470316801.ch5) (AGglomerative NESting): Continuously merge nodes that have the least dissimilarity.
 
 __Arguments__
 
-* `data`: Array of points to be clustered.
+* `data`: Array of points to be clustered, are an array of arrays, as [[x1,y1],[x2,y2], ... ]
+* `options`: Is an object with the parameters `sim` and `kind`, where `sim` is a distance function between vectors (the default function is the euclidean), and `kind` is the string name for the function to calculate distance between clusters, and it could be `single`(default), `complete`, `average`, `centroid` or `ward`
+
+#### getDendogram([input])
+
+Returns a phylogram (a dendogram with weights) and change the leaves values for the values in `input`, if it's given.
 
 __Example__
 
 ```js
+var hclust = require('ml-hclust')
 var data = [[2,6], [3,4], [3,8]];
-var myHcl = new HCL();
-myHcl.cluster(data);
+var HC = new hclust.agnes(data);
+var dend1 = HC.getDendogram();
+var dend2 = HC.getDendogram([{a:1},{b:2},{c:3}]);
 ```
 
-### getLevel(L)
+#### nClusters(N)
 
-Returns `L` level of the hierarchical clustering tree.
+Returns at least N clusters based in the clustering tree if it's possible
+
+### new diana(data,[options])
+
+[DIANA](http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0470276800.html) (Divisive ANAlysis): The process starts at the root with all the points as one cluster and recursively splits the higher level clusters to build the dendrogram.
 
 __Arguments__
 
-* `L` - Level of the hierarchical tree.
+* `data`: Array of points to be clustered, are an array of arrays, as [[x1,y1],[x2,y2], ... ]
+* `options`: Is an object with the parameters `sim` and `kind`, where `sim` is a distance function between vectors (the default function is the euclidean), and `kind` is the string name for the function to calculate distance between clusters, and it could be `single`(default), `complete`, `average`, `centroid` or `ward`
+
+#### getDendogram([input])
+
+Returns a phylogram (a dendogram with weights) and change the leaves values for the values in `input`, if it's given.
 
 __Example__
 
 ```js
-// the clustering points
-var agnesData = [[2,6], [3,4], [3,8], [4,5], [4,7], [6,2], [7,2], [7,4], [8,4], [8,5]];
-
-// creates the hierarchical tree
-var HC = new Hclust();
-HC.cluster(agnesData);
-
-// the array of clusters
-var ansAgnes = HC.getLevel(3);
-/*
-[ [ [ 3, 4 ], [ 4, 5 ], [ 3, 8 ], [ 4, 7 ] ],
-  [ [ 6, 2 ], [ 7, 2 ] ],
-  [ [ 7, 4 ], [ 8, 4 ], [ 8, 5 ] ],
-  [ [ 2, 6 ] ] ]
-*/
+var hclust = require('ml-hclust')
+var data = [[2,6], [3,4], [3,8]];
+var HC = new hclust.diana(data);
+var dend1 = HC.getDendogram();
+var dend2 = HC.getDendogram([{a:1},{b:2},{c:3}]);
 ```
 
-### export()
+#### nClusters(N)
 
-Exports the model to a JSON object that can be written to disk and reloaded
+Returns at least N clusters based in the clustering tree if it's possible
 
-### load(model)
+### new birch(data,[options])
 
-Returns a new Hclust instance based on the `model`.
+[BIRCH](http://www.cs.sfu.ca/CourseCentral/459/han/papers/zhang96.pdf) (Balanced Iterative Reducing and Clustering using Hierarchies): Incrementally construct a CF (Clustering Feature) tree, a hierarchical data structure for multiphase clustering
 
-__Arguments__
 
-* `model` - JSON object generated with `Hclust.export()`
+### new cure(data,[options])
+
+[CURE](http://www.cs.bu.edu/fac/gkollios/ada05/LectNotes/guha98cure.pdf) (Clustering Using REpresentatives):
+
+
+### new chameleon(data,[options])
+
+[CHAMELEON](http://www.google.ch/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CCQQFjAAahUKEwj6t4n_sZbGAhXDaxQKHXCLCmQ&url=http%3A%2F%2Fglaros.dtc.umn.edu%2Fgkhome%2Ffetch%2Fpapers%2FchameleonCOMPUTER99.pdf&ei=kDqBVfqvKsPXUfCWqqAG&usg=AFQjCNEYcGqCxN5N_GlP4Z__UF09aHegQg&sig2=9JkxZ5VS7iDbiJT-imX5Pg&bvm=bv.96041959,d.d24&cad=rja) 
+
 
 ## Test
 

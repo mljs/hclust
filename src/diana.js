@@ -153,7 +153,7 @@ function diff(Ci, Cj, disFun) {
 /**
  * Splits the higher level clusters
  * @param {Array <Array <number>>} data - Array of points to be clustered
- * @param options
+ * @param {json} options
  * @constructor
  */
 function Diana(data, options) {
@@ -268,6 +268,11 @@ function Diana(data, options) {
     }
 }
 
+/**
+ * Returns a phylogram and change the leaves values for the values in input
+ * @param {Array <object>} input
+ * @returns {json}
+ */
 Diana.prototype.getDendogram = function (input) {
     input = input || {length:this.len, ND: true};
     if (input.length !== this.len)
@@ -293,6 +298,11 @@ Diana.prototype.getDendogram = function (input) {
     return ans;
 };
 
+/**
+ * Returns at least N clusters based in the clustering tree
+ * @param {number} N - number of clusters desired
+ * @returns {Array <Array <number>>}
+ */
 Diana.prototype.nClusters = function (N) {
     if (N >= this.len)
         throw new RangeError('Too many clusters');
