@@ -268,4 +268,46 @@ function Diana(data, options) {
     }
 }
 
+Diana.prototype.getDendogram = function (input) {
+    input = input || {length:this.len, ND: true};
+    if (input.length !== this.len)
+        throw new Error('Invalid input size');
+    var ans = JSON.parse(JSON.stringify(this.tree));
+    var queue = [ans];
+    while (queue.length > 0) {
+        var pointer = queue.shift();
+        if (pointer.data.length === 1) {
+            if (input.ND)
+                pointer.data = pointer.data[0];
+            else
+                pointer.data = input[pointer.index];
+            delete pointer.index;
+        }
+        else {
+            delete pointer.data;
+            delete pointer.index;
+            for (var i = 0; i < pointer.children.length; i++)
+                queue.push(pointer.children[i]);
+        }
+    }
+    return ans;
+};
+
+Diana.prototype.nClusters = function (N) {
+    if (N >= this.len)
+        throw new RangeError('Too many clusters');
+    var queue = [this.tree];
+    while (queue.length  < N) {
+        var pointer = queue.shift();
+        for (var i = 0; i < pointer.children.length; i++)
+            queue.push(pointer.children[i]);
+    }
+    var ans = new Array(queue.length);
+    for (var j = 0; j < queue.length; j++) {
+        var obj = queue[j];
+        ans[j] = obj.data.concat();
+    }
+    return ans;
+};
+
 module.exports = Diana;
