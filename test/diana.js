@@ -7,6 +7,6 @@ describe('Hierarchical clustering test', function () {
         var HC = new hclust.diana(dianaData);
         var dend = HC.getDendogram();
         dend.dis.should.equal(0);
-        HC.nClusters(3)[0][0][0].should.equal(6);
+        HC.nClusters(3)[0][0][0].should.equal(3);
     });
 });
