@@ -43,10 +43,10 @@ function closestCluster(tree, point, dis) {
             d = dis(point, dot);
             if (d < m) {
                 m = d;
-                id = i;
+                id = j;
             }
         }
-        node = node[id];
+        node = node.children[id];
     }
     return node
 }
@@ -94,7 +94,7 @@ function Birch(data, options) {
             clust.data.push(data[i])
         }
         else {
-            // distribute the cluster points with the new point and attach to father
+            // TODO: distribute the cluster points with the new point
             var aux = {
                 leaf: true,
                 info: {
@@ -107,23 +107,159 @@ function Birch(data, options) {
                 right: clust.right,
                 father: clust.father
             };
-            clust.right.left = aux;
             clust.right = aux;
+            if (clust.right)
+                clust.right.left = aux;
 
             if (aux.father === undefined) {
                 this.tree.push(aux);
-                // branching factor exceeded split father
                 if (this.tree.length > this.options.L) {
-                    // branching factor of non-leaf node exceeded split
-                    if (true) {}
+                    var rootSplit = [
+                        {
+                            leaf: false,
+                            info: {
+                                N: Math.floor(this.tree.length / 2),
+                                LS: [0, 0],
+                                SS: [0, 0]
+                            },
+                            children: this.tree.slice(0, Math.floor(this.tree.length / 2)),
+                            father: undefined
+                        },
+                        {
+                            leaf: false,
+                            info: {
+                                N: Math.ceil(this.tree.length / 2),
+                                LS: 0,
+                                SS: 0
+                            },
+                            children: this.tree.slice(Math.ceil(this.tree.length / 2)),
+                            father: undefined
+                        }
+                    ];
+                    for (var f = 0; f < rootSplit[0].children.length; f++) {
+                        rootSplit[0].info.LS[0] += rootSplit[0].children[f].info.LS[0];
+                        rootSplit[0].info.LS[1] += rootSplit[0].children[f].info.LS[1];
+                        rootSplit[0].info.SS[0] += rootSplit[0].children[f].info.SS[0];
+                        rootSplit[0].info.SS[1] += rootSplit[0].children[f].info.SS[1];
+                    }
+                    for (var g = 0; g < rootSplit[1].children.length; g++) {
+                        rootSplit[1].info.LS[0] += rootSplit[1].children[g].info.LS[0];
+                        rootSplit[1].info.LS[1] += rootSplit[1].children[g].info.LS[1];
+                        rootSplit[1].info.SS[0] += rootSplit[1].children[g].info.SS[0];
+                        rootSplit[1].info.SS[1] += rootSplit[1].children[g].info.SS[1];
+                    }
+                    this.tree = rootSplit;
                 }
             }
             else {
                 aux.father.children.push(aux);
-                // branching factor exceeded split father
                 if (aux.father.children.length > this.options.L) {
-                    // branching factor of non-leaf node exceeded split
-                    if (true) {}
+                    var oldFather = aux.father;
+                    var newFather1 = {
+                        leaf: false,
+                        info: {
+                            N: Math.floor(oldFather.children.length / 2),
+                            LS: [0, 0],
+                            SS: [0, 0]
+                        },
+                        children: oldFather.children.slice(0, Math.floor(oldFather.children.length / 2)),
+                        father: oldFather.father
+                    };
+                    var newFather2 = {
+                        leaf: false,
+                        info: {
+                            N: Math.ceil(oldFather.children.length / 2),
+                            LS: 0,
+                            SS: 0
+                        },
+                        children: oldFather.children.slice(Math.ceil(oldFather.children.length / 2)),
+                        father: oldFather.father
+                    };
+                    for (var h = 0; h < newFather1.children.length; h++) {
+                        newFather1.info.LS[0] += newFather1.children[h].info.LS[0];
+                        newFather1.info.LS[1] += newFather1.children[h].info.LS[1];
+                        newFather1.info.SS[0] += newFather1.children[h].info.SS[0];
+                        newFather1.info.SS[1] += newFather1.children[h].info.SS[1];
+                    }
+                    for (var e = 0; e < newFather2.children.length; e++) {
+                        newFather2.info.LS[0] += newFather2.children[e].info.LS[0];
+                        newFather2.info.LS[1] += newFather2.children[e].info.LS[1];
+                        newFather2.info.SS[0] += newFather2.children[e].info.SS[0];
+                        newFather2.info.SS[1] += newFather2.children[e].info.SS[1];
+                    }
+                    if (oldFather.father === undefined) {
+                        for (var a = 0; a < this.tree.length; a++)
+                            if (this.tree[a] === oldFather) {
+                                this.tree.splice(a, 1);
+                                this.tree.push(newFather1);
+                                this.tree.push(newFather2);
+                                break;
+                            }
+                    }
+                    else {
+                        for (var b = 0; b < oldFather.father.children.length; b++)
+                            if (oldFather.father.children[b] === oldFather) {
+                                oldFather.father.children.splice(b, 1);
+                                oldFather.father.children.push(newFather1);
+                                oldFather.father.children.push(newFather2);
+                                break;
+                            }
+                    }
+                    var bigFather = oldFather.father;
+                    while (bigFather.children.length > this.options.B) {
+                        var newBigFather1 = {
+                            leaf: false,
+                            info: {
+                                N: Math.floor(bigFather.children.length / 2),
+                                LS: [0, 0],
+                                SS: [0, 0]
+                            },
+                            children: bigFather.children.slice(0, Math.floor(bigFather.children.length / 2)),
+                            father: bigFather.father
+                        };
+                        var newBigFather2 = {
+                            leaf: false,
+                            info: {
+                                N: Math.ceil(bigFather.children.length / 2),
+                                LS: 0,
+                                SS: 0
+                            },
+                            children: bigFather.children.slice(Math.ceil(bigFather.children.length / 2)),
+                            father: bigFather.father
+                        };
+                        for (var c = 0; c < newBigFather1.children.length; c++) {
+                            newBigFather1.info.LS[0] += newBigFather1.children[c].info.LS[0];
+                            newBigFather1.info.LS[1] += newBigFather1.children[c].info.LS[1];
+                            newBigFather1.info.SS[0] += newBigFather1.children[c].info.SS[0];
+                            newBigFather1.info.SS[1] += newBigFather1.children[c].info.SS[1];
+                        }
+                        for (var p = 0; p < newBigFather2.children.length; p++) {
+                            newBigFather2.info.LS[0] += newBigFather2.children[p].info.LS[0];
+                            newBigFather2.info.LS[1] += newBigFather2.children[p].info.LS[1];
+                            newBigFather2.info.SS[0] += newBigFather2.children[p].info.SS[0];
+                            newBigFather2.info.SS[1] += newBigFather2.children[p].info.SS[1];
+                        }
+                        if (bigFather.father === undefined) {
+                            for (var q = 0; q < this.tree.length; q++)
+                                if (this.tree[q] === bigFather) {
+                                    this.tree.splice(q, 1);
+                                    this.tree.push(newBigFather1);
+                                    this.tree.push(newBigFather2);
+                                    break;
+                                }
+                            break;
+                        }
+                        else {
+                            for (var r = 0; r < bigFather.father.children.length; r++)
+                                if (bigFather.father.children[r] === bigFather) {
+                                    bigFather.father.children.splice(r, 1);
+                                    bigFather.father.children.push(newBigFather1);
+                                    bigFather.father.children.push(newBigFather2);
+                                    break;
+                                }
+                            bigFather = bigFather.father;
+                        }
+                    }
                 }
             }
         }
@@ -136,9 +272,11 @@ function Birch(data, options) {
  * @returns {json}
  */
 Birch.prototype.getDendogram = function (input) {
+    // TODO: fix
     input = input || {length:this.len, ND: true};
     if (input.length !== this.len)
         throw new Error('Invalid input size');
+    console.log(require('util').inspect(this.tree, {showHidden: false, depth: 20}));
     var ans = JSON.parse(JSON.stringify(this.tree));
     var queue = [ans];
     while (queue.length > 0) {
