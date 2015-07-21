@@ -1,5 +1,7 @@
 "use strict";
 
+var Kd_tree = require('kdTree');
+
 /**
  * calculates the euclidean distance
  * @param {Array <number>} a
@@ -47,11 +49,13 @@ function merge(u, v, alpha, c) {
      return w
 }
 
+/*
 // TODO
 function Kd_tree(data) {}
 
 Kd_tree.prototype.del = function () {};
 Kd_tree.prototype.ins = function () {};
+*/
 
 
 // TODO
@@ -85,16 +89,17 @@ function Cure(data, options) {
             this.options[o] = defaultOptions[o];
         }
     }
-    var T = Kd_tree(data);
+    var dim = new Array(data[0].length); // really?
+    var T = Kd_tree(data, options.dis, dim);
     var Q = Heap(data);
     while (Q.length > 1) {
         var u = Q.extr();
         var v = u.closest;
         Q.del(v);
         var w = merge(u, v, this.options.alpha, this.options.c);
-        T.del(u);
-        T.del(v);
-        T.ins(w);
+        T.remove(u);
+        T.remove(v);
+        T.insert(w);
         var X = Q.toArr();
         w.closest = X[0];
         for (var i = 0; i < X.length; i++) {
