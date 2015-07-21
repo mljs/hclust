@@ -1,22 +1,8 @@
 'use strict';
 
 var euclidean = require('ml-euclidean-distance');
-
-/**
- * Removes repeated elements of an array
- * @param {Array} array
- * @returns {Array} same array but without repeated elements
- */
-function arrayUnique(array) {
-    var a = array.concat();
-    for(var i=0; i<a.length; ++i) {
-        for(var j=i+1; j<a.length; ++j) {
-            if(a[i] === a[j])
-                a.splice(j--, 1);
-        }
-    }
-    return a;
-}
+var ClusterLeaf = require('./ClusterLeaf');
+var Cluster = require('./Cluster');
 
 /**
  * @param cluster1
@@ -117,7 +103,7 @@ function wardLink(cluster1, cluster2, disFun) {
 }
 
 var defaultOptions = {
-    sim: euclidean,
+    disFunc: euclidean,
     kind: 'single'
 };
 
@@ -127,7 +113,7 @@ var defaultOptions = {
  * @param {json} options
  * @constructor
  */
-function Agnes(data, options) {
+function agnes(data, options) {
     options = options || {};
     this.options = {};
     for (var o in defaultOptions) {
@@ -138,10 +124,8 @@ function Agnes(data, options) {
         }
     }
     this.len = data.length;
-    var dataAux = new Array(this.len);
-    for (var b = 0; b < this.len; b++)
-        dataAux[b] = [data[b]];
-    data = dataAux.concat();
+
+    // allows to use a string or a given function
     if (typeof this.options.kind === "string") {
         switch (this.options.kind) {
             case 'single':
@@ -166,130 +150,90 @@ function Agnes(data, options) {
     else if (typeof this.options.kind !== "function")
         throw new TypeError('Undefined kind of similarity');
 
-    var list = new Array(data.length);
+    var list = new Array(this.length);
     for (var i = 0; i < data.length; i++)
-        list[i] = {
-            index: i,
-            dis: undefined,
-            data: data[i].concat(),
-            children: []
-        };
+        list[i] = new ClusterLeaf(i);
     var min  = 10e5,
         d = {},
         dis = 0;
 
     while (list.length > 1) {
+
+        // calculates the minimum distance
         d = {};
         min = 10e5;
         for (var j = 0; j < list.length; j++)
             for (var k = j + 1; k < list.length; k++) {
-                dis = this.options.kind(list[j].data, list[k].data, this.options.sim).toFixed(4);
+                var fData, sData;
+                if (list[j] instanceof ClusterLeaf)
+                    fData = [data[list[j].index]];
+                else {
+                    fData = new Array(list[j].index.length);
+                    for (var e = 0; e < fData.length; e++)
+                        fData[e] = data[list[j].index[e]];
+                }
+                if (list[k] instanceof ClusterLeaf)
+                    sData = [data[list[k].index]];
+                else {
+                    sData = new Array(list[k].index.length);
+                    for (var f = 0; f < sData.length; f++)
+                        sData[f] = data[list[k].index[f]];
+                }
+                dis = this.options.kind(fData, sData, this.options.disFunc).toFixed(4);
                 if (dis in d) {
-                    d[dis].push([j, k]);
+                    d[dis].push([list[j], list[k]]);
                 }
                 else {
-                    d[dis] = [[j, k]];
+                    d[dis] = [[list[j], list[k]]];
                 }
                 min = Math.min(dis, min);
             }
 
+        // cluster dots
         var dmin = d[min.toFixed(4)];
-        var clustered = [];
+        var clustered = new Array(dmin.length);
         var aux,
-            inter;
+            count = 0;
         while (dmin.length > 0) {
             aux = dmin.shift();
-            for (var q = dmin.length - 1; q >= 0; q--) {
-                inter = dmin[q].filter(function(n) {
+            for (var q = 0; q < dmin.length; q++) {
+                var int = dmin[q].filter(function(n) {
                     //noinspection JSReferencingMutableVariableFromClosure
-                    return aux.indexOf(n) != -1
+                    return aux.indexOf(n) !== -1
                 });
-                if (inter.length > 0) {
-                    aux = arrayUnique(aux.concat(dmin[q]));
-                    q = dmin.length - 1;
-                    dmin.splice(q,1);
+                if (int.length > 0) {
+                    var diff = dmin[q].filter(function(n) {
+                        //noinspection JSReferencingMutableVariableFromClosure
+                        return aux.indexOf(n) === -1
+                    });
+                    aux = aux.concat(diff);
+                    dmin.splice(q-- ,1);
                 }
             }
-            clustered.push(aux);
+            clustered[count++] = aux;
         }
+        clustered.length = count;
 
         for (var ii = 0; ii < clustered.length; ii++) {
-            var obj = {
-                dis: undefined,
-                data: undefined,
-                children: []
-            };
-            var newData = [];
+            var obj = new Cluster();
+            obj.children = clustered[ii].concat();
+            obj.distance = min;
+            obj.index = new Array(this.len);
+            var indCount = 0;
             for (var jj = 0; jj < clustered[ii].length; jj++) {
-                var ind = clustered[ii][jj];
-                newData = newData.concat(list[ind].data);
-                list[ind].dis = min;
-                obj.children.push(list[ind]);
-                delete list[ind];
+                if (clustered[ii][jj] instanceof ClusterLeaf)
+                    obj.index[indCount++] = clustered[ii][jj].index;
+                else {
+                    indCount += clustered[ii][jj].index.length;
+                    obj.index = clustered[ii][jj].index.concat(obj.index);
+                }
+                list.splice((list.indexOf(clustered[ii][jj])), 1);
             }
-            obj.data = newData.concat();
+            obj.index.length = indCount;
             list.push(obj);
         }
-        for (var l = 0; l < list.length; l++)
-            if (list[l] === undefined) {
-                list.splice(l,1);
-                l--;
-            }
     }
-    list[0].dis = 0;
-    this.tree = list[0];
+    return list[0];
 }
 
-/**
- * Returns a phylogram and change the leaves values for the values in input
- * @param {Array <object>} input
- * @returns {json}
- */
-Agnes.prototype.getDendogram = function (input) {
-    input = input || {length:this.len, ND: true};
-    if (input.length !== this.len)
-        throw new Error('Invalid input size');
-    var ans = JSON.parse(JSON.stringify(this.tree));
-    var queue = [ans];
-    while (queue.length > 0) {
-        var pointer = queue.shift();
-        if (pointer.data.length === 1) {
-            if (input.ND)
-                pointer.data = pointer.data[0];
-            else
-                pointer.data = input[pointer.index];
-            delete pointer.index;
-        }
-        else {
-            delete pointer.data;
-            delete pointer.index;
-            for (var i = 0; i < pointer.children.length; i++)
-                queue.push(pointer.children[i]);
-        }
-    }
-    return ans;
-};
-
-/**
- * Returns at least N clusters based in the clustering tree
- * @param {number} N - number of clusters desired
- * @returns {Array <Array <number>>}
- */
-Agnes.prototype.nClusters = function (N) {
-    if (N >= this.len)
-        throw new RangeError('Too many clusters');
-    var queue = [this.tree];
-    while (queue.length  < N) {
-        var pointer = queue.shift();
-        for (var i = 0; i < pointer.children.length; i++)
-            queue.push(pointer.children[i]);
-    }
-    var ans = new Array(queue.length);
-    for (var j = 0; j < queue.length; j++) {
-        var obj = queue[j];
-        ans[j] = obj.data.concat();
-    }
-    return ans;
-};
-
-module.exports = Agnes;
+module.exports = agnes;
