@@ -36,6 +36,6 @@
     "should": "latest"
   },
   "dependencies": {
-    "ml-distance": "^1.0.0"
+    "ml-euclidean-distance": "^1.0.0"
   }
 }

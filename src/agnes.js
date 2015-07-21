@@ -1,20 +1,6 @@
 'use strict';
 
-/**
- * calculates the euclidean distance
- * @param {Array <number>} a
- * @param {Array <number>} b
- * @returns {number}
- */
-function euclidean(a, b) {
-    var i = 0,
-        ii = a.length,
-        d = 0;
-    for (; i < ii; i++) {
-        d += (a[i] - b[i]) * (a[i] - b[i]);
-    }
-    return Math.sqrt(d);
-}
+var euclidean = require('ml-euclidean-distance');
 
 /**
  * Removes repeated elements of an array
