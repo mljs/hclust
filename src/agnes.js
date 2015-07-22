@@ -167,14 +167,14 @@ function agnes(data, options) {
                 else {
                     fData = new Array(list[j].index.length);
                     for (var e = 0; e < fData.length; e++)
-                        fData[e] = data[list[j].index[e]];
+                        fData[e] = data[list[j].index[e].index];
                 }
                 if (list[k] instanceof ClusterLeaf)
                     sData = [data[list[k].index]];
                 else {
                     sData = new Array(list[k].index.length);
                     for (var f = 0; f < sData.length; f++)
-                        sData[f] = data[list[k].index[f]];
+                        sData[f] = data[list[k].index[f].index];
                 }
                 dis = options.kind(fData, sData, options.disFunc).toFixed(4);
                 if (dis in d) {
@@ -219,7 +219,7 @@ function agnes(data, options) {
             var indCount = 0;
             for (var jj = 0; jj < clustered[ii].length; jj++) {
                 if (clustered[ii][jj] instanceof ClusterLeaf)
-                    obj.index[indCount++] = clustered[ii][jj].index;
+                    obj.index[indCount++] = clustered[ii][jj];
                 else {
                     indCount += clustered[ii][jj].index.length;
                     obj.index = clustered[ii][jj].index.concat(obj.index);

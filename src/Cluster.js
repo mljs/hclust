@@ -34,6 +34,32 @@ Cluster.prototype.cut = function (threshold) {
  * @param {number} minGroups
  * @return {Cluster}
  */
-Cluster.prototype.group = function (minGroups) {};
+Cluster.prototype.group = function (minGroups) {
+    if (minGroups < 1) throw new RangeError('Number of groups too small');
+    var root = new Cluster();
+    root.children = this.children;
+    root.distance = this.distance;
+    root.index = this.index;
+    if (minGroups === 1)
+        return root;
+    var list = [root];
+    var aux;
+    while (list.length < minGroups && list.length !== 0) {
+        aux = list.shift();
+        list = list.concat(aux.children);
+    }
+    if (list.length === 0) throw new RangeError('Number of groups too big');
+    for (var i = 0; i < list.length; i++)
+        if (list[i].distance === aux.distance) {
+            list.concat(list[i].children.slice(1));
+            list[i] = list[i].children[0];
+        }
+    for (var j = 0; j < list.length; j++)
+        if (list[j].distance !== 0) {
+            var obj = list[j];
+            obj.children = obj.index;
+        }
+    return root;
+};
 
 module.exports = Cluster;

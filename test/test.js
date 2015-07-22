@@ -22,4 +22,10 @@ describe('Hierarchical clustering test', function () {
         var agnes = hclust.agnes(data);
         agnes.cut(1.5).length.should.equal(5);
     });
+
+    it('group test', function () {
+        var agnes = hclust.agnes(data);
+        var groupAgnes = agnes.group(3);
+        groupAgnes.distance.should.be.approximately(agnes.distance, 0.0001);
+    });
 });
