@@ -115,42 +115,39 @@ var defaultOptions = {
  */
 function agnes(data, options) {
     options = options || {};
-    this.options = {};
     for (var o in defaultOptions) {
-        if (options.hasOwnProperty(o)) {
-            this.options[o] = options[o];
-        } else {
-            this.options[o] = defaultOptions[o];
+        if (!(options.hasOwnProperty(o))) {
+            options[o] = defaultOptions[o];
         }
     }
-    this.len = data.length;
+    var len = data.length;
 
     // allows to use a string or a given function
-    if (typeof this.options.kind === "string") {
-        switch (this.options.kind) {
+    if (typeof options.kind === "string") {
+        switch (options.kind) {
             case 'single':
-                this.options.kind = simpleLink;
+                options.kind = simpleLink;
                 break;
             case 'complete':
-                this.options.kind = completeLink;
+                options.kind = completeLink;
                 break;
             case 'average':
-                this.options.kind = averageLink;
+                options.kind = averageLink;
                 break;
             case 'centroid':
-                this.options.kind = centroidLink;
+                options.kind = centroidLink;
                 break;
             case 'ward':
-                this.options.kind = wardLink;
+                options.kind = wardLink;
                 break;
             default:
                 throw new RangeError('Unknown kind of similarity');
         }
     }
-    else if (typeof this.options.kind !== "function")
+    else if (typeof options.kind !== "function")
         throw new TypeError('Undefined kind of similarity');
 
-    var list = new Array(this.length);
+    var list = new Array(len);
     for (var i = 0; i < data.length; i++)
         list[i] = new ClusterLeaf(i);
     var min  = 10e5,
@@ -179,7 +176,7 @@ function agnes(data, options) {
                     for (var f = 0; f < sData.length; f++)
                         sData[f] = data[list[k].index[f]];
                 }
-                dis = this.options.kind(fData, sData, this.options.disFunc).toFixed(4);
+                dis = options.kind(fData, sData, options.disFunc).toFixed(4);
                 if (dis in d) {
                     d[dis].push([list[j], list[k]]);
                 }
@@ -218,7 +215,7 @@ function agnes(data, options) {
             var obj = new Cluster();
             obj.children = clustered[ii].concat();
             obj.distance = min;
-            obj.index = new Array(this.len);
+            obj.index = new Array(len);
             var indCount = 0;
             for (var jj = 0; jj < clustered[ii].length; jj++) {
                 if (clustered[ii][jj] instanceof ClusterLeaf)
