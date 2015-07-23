@@ -115,11 +115,9 @@ var defaultOptions = {
  */
 function agnes(data, options) {
     options = options || {};
-    for (var o in defaultOptions) {
-        if (!(options.hasOwnProperty(o))) {
+    for (var o in defaultOptions)
+        if (!(options.hasOwnProperty(o)))
             options[o] = defaultOptions[o];
-        }
-    }
     var len = data.length;
 
     // allows to use a string or a given function
