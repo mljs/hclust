@@ -6,13 +6,12 @@ describe('Hierarchical clustering test', function () {
 
     it('AGNES test', function () {
         var agnes = hclust.agnes(data);
-        agnes.distance.should.equal(3.6056);
+        agnes.distance.should.be.approximately(3.6056, 0.001);
     });
 
     it('DIANA test', function () {
         var diana = hclust.diana(data);
-        console.log(require('util').inspect(diana, {depth:null}));
-        diana.distance.should.equal(3.6056);
+        diana.distance.should.be.approximately(3.1360, 0.001);
     });
 
     it('cut test', function () {

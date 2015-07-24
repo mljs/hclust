@@ -147,6 +147,24 @@ var defaultOptions = {
 };
 
 /**
+ * Intra-cluster distance
+ * @param {Array} index
+ * @param {Array} data
+ * @param {function} disFun
+ * @returns {number}
+ */
+function intrDist(index, data, disFun) {
+    var dist = 0,
+        count = 0;
+    for (var i = 0; i < index.length; i++)
+        for (var j = i; j < index.length; j++) {
+            dist += disFun(data[index[i].index], data[index[j].index]);
+            count++
+        }
+    return dist / count;
+}
+
+/**
  * Splits the higher level clusters
  * @param {Array <Array <number>>} data - Array of points to be clustered
  * @param {json} options
@@ -188,11 +206,11 @@ function diana(data, options) {
         tree.index[ind] = new ClusterLeaf(ind);
     }
 
+    tree.distance = intrDist(tree.index, data, options.dist);
     var m, M, clId,
         dist, rebel;
     var list = [tree];
     while (list.length > 0) {
-        console.log(list);
         M = 0;
         clId = 0;
         for (var i = 0; i < list.length; i++) {
@@ -207,14 +225,19 @@ function diana(data, options) {
                 clId = i;
             }
         }
-        //console.log(clId);
         M = 0;
         if (list[clId].index.length === 2) {
             list[clId].children = [list[clId].index[0], list[clId].index[1]];
             list[clId].distance = options.dist(data[list[clId].index[0].index], data[list[clId].index[1].index]);
-            list.splice(clId, 1);
         }
-        else if (list[clId].index.length === 3) {} // TODO
+        else if (list[clId].index.length === 3) {
+            list[clId].children = [list[clId].index[0], list[clId].index[1], list[clId].index[2]];
+            var d = [
+                options.dist(data[list[clId].index[0].index], data[list[clId].index[1].index]),
+                options.dist(data[list[clId].index[1].index], data[list[clId].index[2].index])
+            ];
+            list[clId].distance = (d[0] + d[1]) / 2;
+        }
         else {
             var C = new Cluster();
             var sG = new Cluster();
@@ -244,20 +267,23 @@ function diana(data, options) {
             C.index = new Array(splitting[0].length);
             for (var e = 0; e < fData.length; e++) {
                 fData[e] = data[list[clId].index[splitting[0][e]].index];
-                C.index[e] = tree.index[e];
+                C.index[e] = list[clId].index[splitting[0][e]];
+                C.children[e] = list[clId].index[splitting[0][e]];
             }
             var sData = new Array(splitting[1].length);
             sG.index = new Array(splitting[1].length);
             for (var f = 0; f < sData.length; f++) {
                 sData[f] = data[list[clId].index[splitting[1][f]].index];
-                sG.index[f] = tree.index[f];
+                sG.index[f] = list[clId].index[splitting[1][f]];
+                sG.children[f] = list[clId].index[splitting[1][f]];
             }
-            list[clId].distance = options.kind(fData, sData, options.dist);
+            C.distance = intrDist(C.index, data, options.dist);
+            sG.distance = intrDist(sG.index, data, options.dist);
             list.push(C);
             list.push(sG);
             list[clId].children = [C, sG];
-            list.splice(clId, 1);
         }
+        list.splice(clId, 1);
     }
     return tree;
 }
