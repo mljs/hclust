@@ -13,8 +13,8 @@ var Cluster = require('./Cluster');
 function simpleLink(cluster1, cluster2, disFun) {
     var m = 10e100;
     for (var i = 0; i < cluster1.length; i++)
-        for (var j = i; j < cluster2.length; j++) {
-            var d = disFun(cluster1[i], cluster2[j]);
+        for (var j = 0; j < cluster2.length; j++) {
+            var d = disFun[cluster1[i]][ cluster2[j]];
             m = Math.min(d,m);
         }
     return m;
@@ -29,8 +29,8 @@ function simpleLink(cluster1, cluster2, disFun) {
 function completeLink(cluster1, cluster2, disFun) {
     var m = -1;
     for (var i = 0; i < cluster1.length; i++)
-        for (var j = i; j < cluster2.length; j++) {
-            var d = disFun(cluster1[i], cluster2[j]);
+        for (var j = 0; j < cluster2.length; j++) {
+            var d = disFun[cluster1[i]][ cluster2[j]];
             m = Math.max(d,m);
         }
     return m;
@@ -46,7 +46,7 @@ function averageLink(cluster1, cluster2, disFun) {
     var m = 0;
     for (var i = 0; i < cluster1.length; i++)
         for (var j = 0; j < cluster2.length; j++)
-            m += disFun(cluster1[i], cluster2[j]);
+            m += disFun[cluster1[i]][ cluster2[j]];
     return m / (cluster1.length * cluster2.length);
 }
 
@@ -57,23 +57,13 @@ function averageLink(cluster1, cluster2, disFun) {
  * @returns {*}
  */
 function centroidLink(cluster1, cluster2, disFun) {
-    var x1 = 0,
-        y1 = 0,
-        x2 = 0,
-        y2 = 0;
-    for (var i = 0; i < cluster1.length; i++) {
-        x1 += cluster1[i][0];
-        y1 += cluster1[i][1];
-    }
-    for (var j = 0; j < cluster2.length; j++) {
-        x2 += cluster2[j][0];
-        y2 += cluster2[j][1];
-    }
-    x1 /= cluster1.length;
-    y1 /= cluster1.length;
-    x2 /= cluster2.length;
-    y2 /= cluster2.length;
-    return disFun([x1,y1], [x2,y2]);
+    var m = -1;
+    var dist = new Array(cluster1.length*cluster2.length);
+    for (var i = 0; i < cluster1.length; i++)
+        for (var j = 0; j < cluster2.length; j++) {
+            dist[i*cluster1.length+j]=(disFun[cluster1[i]][ cluster2[j]]);
+        }
+    return median(dist);
 }
 
 /**
@@ -83,42 +73,58 @@ function centroidLink(cluster1, cluster2, disFun) {
  * @returns {number}
  */
 function wardLink(cluster1, cluster2, disFun) {
-    var x1 = 0,
-        y1 = 0,
-        x2 = 0,
-        y2 = 0;
-    for (var i = 0; i < cluster1.length; i++) {
-        x1 += cluster1[i][0];
-        y1 += cluster1[i][1];
+    return centroidLink(cluster1, cluster2, disFun)
+        *cluster1.length*cluster2.length / (cluster1.length+cluster2.length);
+}
+
+function compareNumbers(a, b) {
+    return a - b;
+}
+
+function median(values, alreadySorted) {
+    if (alreadySorted === undefined) alreadySorted = false;
+    if (!alreadySorted) {
+        values = [].concat(values).sort(compareNumbers);
     }
-    for (var j = 0; j < cluster2.length; j++) {
-        x2 += cluster2[j][0];
-        y2 += cluster2[j][1];
+    var l = values.length;
+    var half = Math.floor(l / 2);
+    if (l % 2 === 0) {
+        return (values[half - 1] + values[half]) * 0.5;
+    } else {
+        return values[half];
     }
-    x1 /= cluster1.length;
-    y1 /= cluster1.length;
-    x2 /= cluster2.length;
-    y2 /= cluster2.length;
-    return disFun([x1,y1], [x2,y2])*cluster1.length*cluster2.length / (cluster1.length+cluster2.length);
 }
 
 var defaultOptions = {
     disFunc: euclidean,
-    kind: 'single'
+    kind: 'single',
+    source:'data'
+
 };
 
 /**
  * Continuously merge nodes that have the least dissimilarity
- * @param {Array <Array <number>>} data - Array of points to be clustered
+ * @param {Array <Array <number>>} distance - Array of points to be clustered
  * @param {json} options
+ * @option source: Clustering has to be based on a list of data(default)
+ *                 or Clustering has to be based on a distance matrix(any other value)
  * @constructor
  */
 function agnes(data, options) {
-    options = options || {};
-    for (var o in defaultOptions)
-        if (!(options.hasOwnProperty(o)))
-            options[o] = defaultOptions[o];
+    options = Object.assign({}, defaultOptions, options);
     var len = data.length;
+
+    var distance = data;//If source
+    if(options.source === 'data' ) {
+        distance = new Array(len);
+        for(var i = 0;i < len; i++) {
+            distance[i] = new Array(len);
+            for (var j = 0; j < len; j++) {
+                distance[i][j] = options.disFunc(data[i],data[j]);
+            }
+        }
+    }
+
 
     // allows to use a string or a given function
     if (typeof options.kind === "string") {
@@ -146,35 +152,34 @@ function agnes(data, options) {
         throw new TypeError('Undefined kind of similarity');
 
     var list = new Array(len);
-    for (var i = 0; i < data.length; i++)
+    for (var i = 0; i < distance.length; i++)
         list[i] = new ClusterLeaf(i);
     var min  = 10e5,
         d = {},
         dis = 0;
 
     while (list.length > 1) {
-
         // calculates the minimum distance
         d = {};
         min = 10e5;
-        for (var j = 0; j < list.length; j++)
+        for (var j = 0; j < list.length; j++){
             for (var k = j + 1; k < list.length; k++) {
-                var fData, sData;
+                var fdistance, sdistance;
                 if (list[j] instanceof ClusterLeaf)
-                    fData = [data[list[j].index]];
+                    fdistance = [list[j].index];
                 else {
-                    fData = new Array(list[j].index.length);
-                    for (var e = 0; e < fData.length; e++)
-                        fData[e] = data[list[j].index[e].index];
+                    fdistance = new Array(list[j].index.length);
+                    for (var e = 0; e < fdistance.length; e++)
+                        fdistance[e] = list[j].index[e].index;
                 }
                 if (list[k] instanceof ClusterLeaf)
-                    sData = [data[list[k].index]];
+                    sdistance = [list[k].index];
                 else {
-                    sData = new Array(list[k].index.length);
-                    for (var f = 0; f < sData.length; f++)
-                        sData[f] = data[list[k].index[f].index];
+                    sdistance = new Array(list[k].index.length);
+                    for (var f = 0; f < sdistance.length; f++)
+                        sdistance[f] = list[k].index[f].index;
                 }
-                dis = options.kind(fData, sData, options.disFunc).toFixed(4);
+                dis = options.kind(fdistance, sdistance, distance).toFixed(4);
                 if (dis in d) {
                     d[dis].push([list[j], list[k]]);
                 }
@@ -183,7 +188,7 @@ function agnes(data, options) {
                 }
                 min = Math.min(dis, min);
             }
-
+        }
         // cluster dots
         var dmin = d[min.toFixed(4)];
         var clustered = new Array(dmin.length);
@@ -230,5 +235,8 @@ function agnes(data, options) {
     }
     return list[0];
 }
+
+
+
 
 module.exports = agnes;

@@ -20,14 +20,14 @@ Generate a clustering hierarchy.
 
 __Arguments__
 
-* `data`: Array of points to be clustered, are an array of arrays, as [[x1,y1],[x2,y2], ... ]
+* `data`: Array of points to be clustered, are an array of arrays, as [[x1,y1],[x2,y2], ... ]. Optionally the data input can be a distance matrix. In such case, the option `source` has to be set to `distance` (the default value is `data`).
 * `options`: Is an object with the parameters `sim` and `kind`, where `sim` is a distance function between vectors (the default function is the euclidean), and `kind` is the string name for the function to calculate distance between clusters, and it could be `single`(default), `complete`, `average`, `centroid` or `ward`
 
 #### getDendogram([input])
 
 Returns a phylogram (a dendogram with weights) and change the leaves values for the values in `input`, if it's given.
 
-__Example__
+__Example 1__
 
 ```js
 var hclust = require('ml-hclust')
@@ -35,6 +35,14 @@ var data = [[2,6], [3,4], [3,8]];
 var HC = new hclust.agnes(data);
 var dend1 = HC.getDendogram();
 var dend2 = HC.getDendogram([{a:1},{b:2},{c:3}]);
+```
+__Example 2__
+
+```js
+var hclust = require('ml-hclust')
+//A distance matrix. 
+var distance = [[0, 1, 2], [1, 0, 2], [2, 2, 0]]; 
+var HC = new hclust.agnes(data, {source:'distance'});
 ```
 
 #### nClusters(N)
