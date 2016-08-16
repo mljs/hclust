@@ -1,6 +1,6 @@
 'use strict';
 
-var euclidean = require('ml-euclidean-distance');
+var euclidean = require('ml-distance-euclidean');
 var ClusterLeaf = require('./ClusterLeaf');
 var Cluster = require('./Cluster');
 
