@@ -31,9 +31,9 @@
   },
   "homepage": "https://github.com/mljs/hclust",
   "devDependencies": {
-    "mocha": "latest",
-    "mocha-better-spec-reporter": "latest",
-    "should": "latest"
+    "mocha": "^3.0.2",
+    "mocha-better-spec-reporter": "^3.0.2",
+    "should": "^11.1.0"
   },
   "dependencies": {
     "ml-distance-euclidean": "^1.0.0"
