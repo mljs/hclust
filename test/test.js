@@ -1,5 +1,5 @@
 var hclust = require('..');
-var euclidean = require('ml-euclidean-distance');
+var euclidean = require('ml-distance-euclidean');
 
 
 var data = [[2,6], [3,4], [3,8], [4,5], [4,7], [6,2], [7,2], [7,4], [8,4], [8,5]];
