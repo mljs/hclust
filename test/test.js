@@ -19,7 +19,7 @@ describe('Hierarchical clustering test', function () {
     });
 
     it('AGNES based on distance matrix test', function () {
-        var agnes = hclust.agnes(distance,{source:'distance'});
+        var agnes = hclust.agnes(distance, {isDistanceMatrix:true});
         agnes.distance.should.be.approximately(3.1623, 0.001);
     });
 

@@ -98,7 +98,7 @@ function median(values, alreadySorted) {
 var defaultOptions = {
     disFunc: euclidean,
     kind: 'single',
-    source:'data'
+    isDistanceMatrix:false
 
 };
 
@@ -106,8 +106,7 @@ var defaultOptions = {
  * Continuously merge nodes that have the least dissimilarity
  * @param {Array <Array <number>>} distance - Array of points to be clustered
  * @param {json} options
- * @option source: Clustering has to be based on a list of data(default)
- *                 or Clustering has to be based on a distance matrix(any other value)
+ * @option isDistanceMatrix: Is the input a distance matrix?
  * @constructor
  */
 function agnes(data, options) {
@@ -115,7 +114,7 @@ function agnes(data, options) {
     var len = data.length;
 
     var distance = data;//If source
-    if(options.source === 'data' ) {
+    if(!options.isDistanceMatrix) {
         distance = new Array(len);
         for(var i = 0;i < len; i++) {
             distance[i] = new Array(len);

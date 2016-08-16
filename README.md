@@ -20,7 +20,7 @@ Generate a clustering hierarchy.
 
 __Arguments__
 
-* `data`: Array of points to be clustered, are an array of arrays, as [[x1,y1],[x2,y2], ... ]. Optionally the data input can be a distance matrix. In such case, the option `source` has to be set to `distance` (the default value is `data`).
+* `data`: Array of points to be clustered, are an array of arrays, as [[x1,y1],[x2,y2], ... ]. Optionally the data input can be a distance matrix. In such case, the option `isDistanceMatrix` has to be set to true (by default false).
 * `options`: Is an object with the parameters `sim` and `kind`, where `sim` is a distance function between vectors (the default function is the euclidean), and `kind` is the string name for the function to calculate distance between clusters, and it could be `single`(default), `complete`, `average`, `centroid` or `ward`
 
 #### getDendogram([input])
