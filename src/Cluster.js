@@ -46,7 +46,10 @@ Cluster.prototype.group = function (minGroups) {
     var aux;
     while (list.length < minGroups && list.length !== 0) {
         aux = list.shift();
-        list = list.concat(aux.children);
+        if (aux.children)
+            list = list.concat(aux.children);
+        else
+            list.push(aux);
     }
     if (list.length === 0) throw new RangeError('Number of groups too big');
     for (var i = 0; i < list.length; i++)
