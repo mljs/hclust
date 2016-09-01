@@ -1,3 +1,14 @@
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/mljs/hclust/compare/v1.1.0...v1.1.1) (2016-09-01)
+
+
+### Bug Fixes
+
+* **Cluster:** possible infinite loop when all the clusters are leafs ([ba234a7](https://github.com/mljs/hclust/commit/ba234a7))
+* **CLuster:** group method brok in the case when reached a leaf ([b09148f](https://github.com/mljs/hclust/commit/b09148f))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/mljs/hclust/compare/v1.0.1...v1.1.0) (2016-08-16)
 
