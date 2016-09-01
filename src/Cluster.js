@@ -44,11 +44,16 @@ Cluster.prototype.group = function (minGroups) {
         return root;
     var list = [root];
     var aux;
-    while (list.length < minGroups && list.length !== 0) {
+    var listLeafs = [];
+    while ((list.length + listLeafs.length) < minGroups && list.length !== 0) {
         aux = list.shift();
-        list = list.concat(aux.children);
+        if (aux.children)
+            list = list.concat(aux.children);
+        else
+            listLeafs.push(aux);
     }
     if (list.length === 0) throw new RangeError('Number of groups too big');
+    list = list.concat(listLeafs);
     for (var i = 0; i < list.length; i++)
         if (list[i].distance === aux.distance) {
             list.concat(list[i].children.slice(1));
