@@ -1,3 +1,13 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/mljs/hclust/compare/v1.1.2...v1.2.0) (2016-09-05)
+
+
+### Features
+
+* **cluster:** use a heap to group clusters ([8c70c9e](https://github.com/mljs/hclust/commit/8c70c9e))
+
+
+
 <a name="1.1.2"></a>
 ## [1.1.2](https://github.com/mljs/hclust/compare/v1.1.1...v1.1.2) (2016-09-01)
 
