@@ -5,6 +5,7 @@ var ClusterLeaf = require('./ClusterLeaf');
 var Cluster = require('./Cluster');
 
 /**
+ * @private
  * @param {Array <Array <number>>} cluster1
  * @param {Array <Array <number>>} cluster2
  * @param {function} disFun
@@ -21,6 +22,7 @@ function simpleLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * @param {Array <Array <number>>} cluster1
  * @param {Array <Array <number>>} cluster2
  * @param {function} disFun
@@ -37,6 +39,7 @@ function completeLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * @param {Array <Array <number>>} cluster1
  * @param {Array <Array <number>>} cluster2
  * @param {function} disFun
@@ -51,6 +54,7 @@ function averageLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * @param {Array <Array <number>>} cluster1
  * @param {Array <Array <number>>} cluster2
  * @param {function} disFun
@@ -77,6 +81,7 @@ function centroidLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * @param {Array <Array <number>>} cluster1
  * @param {Array <Array <number>>} cluster2
  * @param {function} disFun
@@ -103,6 +108,7 @@ function wardLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * Returns the most distant point and his distance
  * @param {Array <Array <number>>} splitting - Clusters to split
  * @param {Array <Array <number>>} data - Original data
@@ -147,6 +153,7 @@ var defaultOptions = {
 };
 
 /**
+ * @private
  * Intra-cluster distance
  * @param {Array} index
  * @param {Array} data

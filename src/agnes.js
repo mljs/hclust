@@ -5,6 +5,7 @@ var ClusterLeaf = require('./ClusterLeaf');
 var Cluster = require('./Cluster');
 
 /**
+ * @private
  * @param cluster1
  * @param cluster2
  * @param disFun
@@ -21,6 +22,7 @@ function simpleLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * @param cluster1
  * @param cluster2
  * @param disFun
@@ -37,6 +39,7 @@ function completeLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * @param cluster1
  * @param cluster2
  * @param disFun
@@ -51,6 +54,7 @@ function averageLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * @param cluster1
  * @param cluster2
  * @param disFun
@@ -67,6 +71,7 @@ function centroidLink(cluster1, cluster2, disFun) {
 }
 
 /**
+ * @private
  * @param cluster1
  * @param cluster2
  * @param disFun
