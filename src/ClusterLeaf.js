@@ -7,7 +7,7 @@ function ClusterLeaf (index) {
     Cluster.call(this);
     this.index = index;
     this.distance = 0;
-    this.children = undefined;
+    this.children = [];
 }
 
 util.inherits(ClusterLeaf, Cluster);

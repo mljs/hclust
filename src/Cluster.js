@@ -1,5 +1,7 @@
 'use strict';
 
+const Heap = require('heap');
+
 function Cluster () {
     this.children = [];
     this.distance = -1;
@@ -35,35 +37,26 @@ Cluster.prototype.cut = function (threshold) {
  * @return {Cluster}
  */
 Cluster.prototype.group = function (minGroups) {
-    if (minGroups < 1) throw new RangeError('Number of groups too small');
-    var root = new Cluster();
-    root.children = this.children;
-    root.distance = this.distance;
-    root.index = this.index;
-    if (minGroups === 1)
-        return root;
-    var list = [root];
-    var aux;
-    var listLeafs = [];
-    while ((list.length + listLeafs.length) < minGroups && list.length !== 0) {
-        aux = list.shift();
-        if (aux.children)
-            list = list.concat(aux.children);
-        else
-            listLeafs.push(aux);
+    if (!Number.isInteger(minGroups) || minGroups < 1) throw new RangeError('Number of groups must be a positive integer');
+
+    const heap = new Heap(function (a, b) {
+        return b.distance - a.distance;
+    });
+
+    heap.push(this);
+
+    while (heap.size() < minGroups) {
+        var first = heap.pop();
+        if (first.children.length === 0) {
+            break;
+        }
+        first.children.forEach(child => heap.push(child));
     }
-    if (list.length === 0) throw new RangeError('Number of groups too big');
-    list = list.concat(listLeafs);
-    for (var i = 0; i < list.length; i++)
-        if (list[i].distance === aux.distance) {
-            list.concat(list[i].children.slice(1));
-            list[i] = list[i].children[0];
-        }
-    for (var j = 0; j < list.length; j++)
-        if (list[j].distance !== 0) {
-            var obj = list[j];
-            obj.children = obj.index;
-        }
+
+    var root = new Cluster();
+    root.children = heap.toArray();
+    root.distance = this.distance;
+
     return root;
 };
 
