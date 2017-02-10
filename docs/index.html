@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>ml-hclust 1.2.0 | Documentation</title>
+  <title>ml-hclust 1.2.1 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div class='fixed xs-hide fix-3 overflow-auto max-height-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>ml-hclust</h3>
-          <div class='mb1'><code>1.2.0</code></div>
+          <div class='mb1'><code>1.2.1</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -77,11 +77,13 @@
 
   
   <div class='clearfix'>
+    
     <h3 class='fl m0' id='agnes'>
       agnes
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/hclust/blob/259630623f505ba7d546f8114495bad0a737522c/src/agnes.js#L117-L241'>
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/hclust/blob/7676482d8e97e3d798cd1d1fe73161b08d196475/src/agnes.js#L118-L235'>
       <span>src/agnes.js</span>
       </a>
     
@@ -91,8 +93,8 @@
   <p>Continuously merge nodes that have the least dissimilarity</p>
 
 
-  <div class='pre p1 fill-light mt0'>new agnes(distance: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;, data: Any, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">json</a>)</div>
-
+  <div class='pre p1 fill-light mt0'>new agnes(distance: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">json</a>, data: any)</div>
+  
   
 
   
@@ -107,7 +109,8 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>distance</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;)</code> Array of points to be clustered
+            <span class='code bold'>distance</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>)</code>
+	    Array of points to be clustered
 
           </div>
           
@@ -115,14 +118,16 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>data</span> <code class='quiet'>(Any)</code> 
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">json</a>)</code>
+	    
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">json</a>)</code> 
+            <span class='code bold'>data</span> <code class='quiet'>(any)</code>
+	    
           </div>
           
         </div>
@@ -152,11 +157,13 @@
 
   
   <div class='clearfix'>
+    
     <h3 class='fl m0' id='cut'>
       cut
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/hclust/blob/259630623f505ba7d546f8114495bad0a737522c/src/Cluster.js#L16-L32'>
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/hclust/blob/7676482d8e97e3d798cd1d1fe73161b08d196475/src/Cluster.js#L16-L32'>
       <span>src/Cluster.js</span>
       </a>
     
@@ -166,8 +173,8 @@
   <p>Creates an array of values where maximum distance smaller than the threshold</p>
 
 
-  <div class='pre p1 fill-light mt0'>cut(threshold: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;Cluster&gt;</div>
-
+  <div class='pre p1 fill-light mt0'>cut(threshold: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;Cluster></div>
+  
   
 
   
@@ -182,7 +189,8 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>threshold</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> 
+            <span class='code bold'>threshold</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+	    
           </div>
           
         </div>
@@ -195,8 +203,9 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;Cluster&gt;</code>:
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;Cluster></code>:
         
+
       
     
   
@@ -219,22 +228,24 @@
 
   
   <div class='clearfix'>
+    
     <h3 class='fl m0' id='group'>
       group
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/hclust/blob/259630623f505ba7d546f8114495bad0a737522c/src/Cluster.js#L39-L61'>
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/hclust/blob/7676482d8e97e3d798cd1d1fe73161b08d196475/src/Cluster.js#L39-L61'>
       <span>src/Cluster.js</span>
       </a>
     
   </div>
   
 
-  <p>Merge the leaves in the minimum way to have &#x27;minGroups&#x27; number of clusters</p>
+  <p>Merge the leaves in the minimum way to have 'minGroups' number of clusters</p>
 
 
   <div class='pre p1 fill-light mt0'>group(minGroups: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): Cluster</div>
-
+  
   
 
   
@@ -249,7 +260,8 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>minGroups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code> 
+            <span class='code bold'>minGroups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+	    
           </div>
           
         </div>
@@ -264,6 +276,7 @@
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code>Cluster</code>:
         
+
       
     
   
@@ -286,11 +299,13 @@
 
   
   <div class='clearfix'>
+    
     <h3 class='fl m0' id='diana'>
       diana
     </h3>
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/hclust/blob/259630623f505ba7d546f8114495bad0a737522c/src/diana.js#L180-L296'>
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/mljs/hclust/blob/7676482d8e97e3d798cd1d1fe73161b08d196475/src/diana.js#L180-L296'>
       <span>src/diana.js</span>
       </a>
     
@@ -300,8 +315,8 @@
   <p>Splits the higher level clusters</p>
 
 
-  <div class='pre p1 fill-light mt0'>new diana(data: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">json</a>)</div>
-
+  <div class='pre p1 fill-light mt0'>new diana(data: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">json</a>)</div>
+  
   
 
   
@@ -316,7 +331,8 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>data</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;&gt;)</code> Array of points to be clustered
+            <span class='code bold'>data</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>>)</code>
+	    Array of points to be clustered
 
           </div>
           
@@ -324,7 +340,8 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">json</a>)</code> 
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">json</a>)</code>
+	    
           </div>
           
         </div>
