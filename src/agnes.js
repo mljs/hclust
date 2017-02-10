@@ -3,6 +3,7 @@
 var euclidean = require('ml-distance-euclidean');
 var ClusterLeaf = require('./ClusterLeaf');
 var Cluster = require('./Cluster');
+const distanceMatrix = require('ml-distance-matrix');
 
 /**
  * @private
@@ -117,16 +118,9 @@ var defaultOptions = {
 function agnes(data, options) {
     options = Object.assign({}, defaultOptions, options);
     var len = data.length;
-
     var distance = data;//If source
     if(!options.isDistanceMatrix) {
-        distance = new Array(len);
-        for(var i = 0;i < len; i++) {
-            distance[i] = new Array(len);
-            for (var j = 0; j < len; j++) {
-                distance[i][j] = options.disFunc(data[i],data[j]);
-            }
-        }
+        distance = distanceMatrix(data, options.disFunc);
     }
 
 
