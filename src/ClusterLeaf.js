@@ -1,7 +1,7 @@
 'use strict';
 
-var Cluster = require('./Cluster');
-var util = require('util');
+const Cluster = require('./Cluster');
+const util = require('util');
 
 function ClusterLeaf (index) {
     Cluster.call(this);
