@@ -34,7 +34,7 @@ Cluster.prototype.cut = function (threshold) {
 
 /**
  * Merge the leaves in the minimum way to have 'minGroups' number of clusters
- * @param {number} minGroups
+ * @param {number} minGroups - Them minimum number of children the first level of the tree should have
  * @return {Cluster}
  */
 Cluster.prototype.group = function (minGroups) {
@@ -59,6 +59,23 @@ Cluster.prototype.group = function (minGroups) {
     root.distance = this.distance;
 
     return root;
+};
+
+/**
+ * Traverses the tree depth-first and provide callback to be called on each individual node
+ * @param {function} cb - The callback to be called on each node encounter
+ * @type {Cluster}
+ */
+Cluster.prototype.traverse = function (cb) {
+    function visit(root, callback) {
+        callback(root);
+        if (root.children) {
+            for (var i = root.children.length - 1; i >= 0; i--) {
+                visit(root.children[i], callback);
+            }
+        }
+    }
+    visit(this, cb);
 };
 
 module.exports = Cluster;
