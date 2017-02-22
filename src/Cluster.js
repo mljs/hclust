@@ -2,7 +2,7 @@
 
 const Heap = require('heap');
 
-function Cluster () {
+function Cluster() {
     this.children = [];
     this.distance = -1;
     this.index = [];
@@ -23,10 +23,11 @@ Cluster.prototype.cut = function (threshold) {
     var ans = [];
     while (list.length > 0) {
         var aux = list.shift();
-        if (threshold >= aux.distance)
+        if (threshold >= aux.distance) {
             ans.push(aux);
-        else
+        } else {
             list = list.concat(aux.children);
+        }
     }
     return ans;
 };

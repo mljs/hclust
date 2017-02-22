@@ -3,7 +3,7 @@
 const Cluster = require('./Cluster');
 const util = require('util');
 
-function ClusterLeaf (index) {
+function ClusterLeaf(index) {
     Cluster.call(this);
     this.index = index;
     this.distance = 0;

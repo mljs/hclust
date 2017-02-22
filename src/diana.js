@@ -13,11 +13,12 @@ const Cluster = require('./Cluster');
  */
 function simpleLink(cluster1, cluster2, disFun) {
     var m = 10e100;
-    for (var i = 0; i < cluster1.length; i++)
+    for (var i = 0; i < cluster1.length; i++) {
         for (var j = i; j < cluster2.length; j++) {
             var d = disFun(cluster1[i], cluster2[j]);
-            m = Math.min(d,m);
+            m = Math.min(d, m);
         }
+    }
     return m;
 }
 
@@ -30,11 +31,12 @@ function simpleLink(cluster1, cluster2, disFun) {
  */
 function completeLink(cluster1, cluster2, disFun) {
     var m = -1;
-    for (var i = 0; i < cluster1.length; i++)
+    for (var i = 0; i < cluster1.length; i++) {
         for (var j = i; j < cluster2.length; j++) {
             var d = disFun(cluster1[i], cluster2[j]);
-            m = Math.max(d,m);
+            m = Math.max(d, m);
         }
+    }
     return m;
 }
 
@@ -47,9 +49,11 @@ function completeLink(cluster1, cluster2, disFun) {
  */
 function averageLink(cluster1, cluster2, disFun) {
     var m = 0;
-    for (var i = 0; i < cluster1.length; i++)
-        for (var j = 0; j < cluster2.length; j++)
+    for (var i = 0; i < cluster1.length; i++) {
+        for (var j = 0; j < cluster2.length; j++) {
             m += disFun(cluster1[i], cluster2[j]);
+        }
+    }
     return m / (cluster1.length * cluster2.length);
 }
 
@@ -77,7 +81,7 @@ function centroidLink(cluster1, cluster2, disFun) {
     y1 /= cluster1.length;
     x2 /= cluster2.length;
     y2 /= cluster2.length;
-    return disFun([x1,y1], [x2,y2]);
+    return disFun([x1, y1], [x2, y2]);
 }
 
 /**
@@ -104,7 +108,7 @@ function wardLink(cluster1, cluster2, disFun) {
     y1 /= cluster1.length;
     x2 /= cluster2.length;
     y2 /= cluster2.length;
-    return disFun([x1,y1], [x2,y2])*cluster1.length*cluster2.length / (cluster1.length+cluster2.length);
+    return disFun([x1, y1], [x2, y2]) * cluster1.length * cluster2.length / (cluster1.length + cluster2.length);
 }
 
 /**
@@ -117,27 +121,32 @@ function wardLink(cluster1, cluster2, disFun) {
  */
 function diff(splitting, data, disFun) {
     var ans = {
-        d:0,
-        p:0
+        d: 0,
+        p: 0
     };
 
     var Ci = new Array(splitting[0].length);
-    for (var e = 0; e < splitting[0].length; e++)
+    for (var e = 0; e < splitting[0].length; e++) {
         Ci[e] = data[splitting[0][e]];
+    }
     var Cj = new Array(splitting[1].length);
-    for (var f = 0; f < splitting[1].length; f++)
+    for (var f = 0; f < splitting[1].length; f++) {
         Cj[f] = data[splitting[1][f]];
+    }
 
     var dist, ndist;
     for (var i = 0; i < Ci.length; i++) {
         dist = 0;
-        for (var j = 0; j < Ci.length; j++)
-            if (i !== j)
+        for (var j = 0; j < Ci.length; j++) {
+            if (i !== j) {
                 dist += disFun(Ci[i], Ci[j]);
+            }
+        }
         dist /= (Ci.length - 1);
         ndist = 0;
-        for (var k = 0; k < Cj.length; k++)
+        for (var k = 0; k < Cj.length; k++) {
             ndist += disFun(Ci[i], Cj[k]);
+        }
         ndist /= Cj.length;
         if ((dist - ndist) > ans.d) {
             ans.d = (dist - ndist);
@@ -163,11 +172,12 @@ var defaultOptions = {
 function intrDist(index, data, disFun) {
     var dist = 0,
         count = 0;
-    for (var i = 0; i < index.length; i++)
+    for (var i = 0; i < index.length; i++) {
         for (var j = i; j < index.length; j++) {
             dist += disFun(data[index[i].index], data[index[j].index]);
-            count++
+            count++;
         }
+    }
     return dist / count;
 }
 
@@ -178,11 +188,8 @@ function intrDist(index, data, disFun) {
  * @constructor
  */
 function diana(data, options) {
-    options = options || {};
-    for (var o in defaultOptions)
-        if (!(options.hasOwnProperty(o)))
-            options[o] = defaultOptions[o];
-    if (typeof options.kind === "string") {
+    options = Object.assign({}, defaultOptions, options);
+    if (typeof options.kind === 'string') {
         switch (options.kind) {
             case 'single':
                 options.kind = simpleLink;
@@ -202,9 +209,9 @@ function diana(data, options) {
             default:
                 throw new RangeError('Unknown kind of similarity');
         }
-    }
-    else if (typeof options.kind !== "function")
+    } else if (typeof options.kind !== 'function') {
         throw new TypeError('Undefined kind of similarity');
+    }
     var tree = new Cluster();
     tree.children = new Array(data.length);
     tree.index = new Array(data.length);
@@ -236,26 +243,27 @@ function diana(data, options) {
         if (list[clId].index.length === 2) {
             list[clId].children = [list[clId].index[0], list[clId].index[1]];
             list[clId].distance = options.dist(data[list[clId].index[0].index], data[list[clId].index[1].index]);
-        }
-        else if (list[clId].index.length === 3) {
+        } else if (list[clId].index.length === 3) {
             list[clId].children = [list[clId].index[0], list[clId].index[1], list[clId].index[2]];
             var d = [
                 options.dist(data[list[clId].index[0].index], data[list[clId].index[1].index]),
                 options.dist(data[list[clId].index[1].index], data[list[clId].index[2].index])
             ];
             list[clId].distance = (d[0] + d[1]) / 2;
-        }
-        else {
+        } else {
             var C = new Cluster();
             var sG = new Cluster();
             var splitting = [new Array(list[clId].index.length), []];
-            for (var spl = 0; spl < splitting[0].length; spl++)
+            for (var spl = 0; spl < splitting[0].length; spl++) {
                 splitting[0][spl] = spl;
+            }
             for (var ii = 0; ii < splitting[0].length; ii++) {
                 dist = 0;
-                for (var jj = 0; jj < splitting[0].length; jj++)
-                    if (ii !== jj)
+                for (var jj = 0; jj < splitting[0].length; jj++) {
+                    if (ii !== jj) {
                         dist += options.dist(data[list[clId].index[splitting[0][jj]].index], data[list[clId].index[splitting[0][ii]].index]);
+                    }
+                }
                 dist /= (splitting[0].length - 1);
                 if (dist > M) {
                     M = dist;

@@ -14,11 +14,12 @@ const distanceMatrix = require('ml-distance-matrix');
  */
 function simpleLink(cluster1, cluster2, disFun) {
     var m = 10e100;
-    for (var i = 0; i < cluster1.length; i++)
+    for (var i = 0; i < cluster1.length; i++) {
         for (var j = 0; j < cluster2.length; j++) {
             var d = disFun[cluster1[i]][ cluster2[j]];
-            m = Math.min(d,m);
+            m = Math.min(d, m);
         }
+    }
     return m;
 }
 
@@ -31,11 +32,12 @@ function simpleLink(cluster1, cluster2, disFun) {
  */
 function completeLink(cluster1, cluster2, disFun) {
     var m = -1;
-    for (var i = 0; i < cluster1.length; i++)
+    for (var i = 0; i < cluster1.length; i++) {
         for (var j = 0; j < cluster2.length; j++) {
             var d = disFun[cluster1[i]][ cluster2[j]];
-            m = Math.max(d,m);
+            m = Math.max(d, m);
         }
+    }
     return m;
 }
 
@@ -48,9 +50,11 @@ function completeLink(cluster1, cluster2, disFun) {
  */
 function averageLink(cluster1, cluster2, disFun) {
     var m = 0;
-    for (var i = 0; i < cluster1.length; i++)
-        for (var j = 0; j < cluster2.length; j++)
+    for (var i = 0; i < cluster1.length; i++) {
+        for (var j = 0; j < cluster2.length; j++) {
             m += disFun[cluster1[i]][ cluster2[j]];
+        }
+    }
     return m / (cluster1.length * cluster2.length);
 }
 
@@ -62,12 +66,12 @@ function averageLink(cluster1, cluster2, disFun) {
  * @returns {*}
  */
 function centroidLink(cluster1, cluster2, disFun) {
-    var m = -1;
-    var dist = new Array(cluster1.length*cluster2.length);
-    for (var i = 0; i < cluster1.length; i++)
+    var dist = new Array(cluster1.length * cluster2.length);
+    for (var i = 0; i < cluster1.length; i++) {
         for (var j = 0; j < cluster2.length; j++) {
-            dist[i*cluster1.length+j]=(disFun[cluster1[i]][ cluster2[j]]);
+            dist[i * cluster1.length + j] = (disFun[cluster1[i]][ cluster2[j]]);
         }
+    }
     return median(dist);
 }
 
@@ -80,7 +84,7 @@ function centroidLink(cluster1, cluster2, disFun) {
  */
 function wardLink(cluster1, cluster2, disFun) {
     return centroidLink(cluster1, cluster2, disFun)
-        *cluster1.length*cluster2.length / (cluster1.length+cluster2.length);
+        * cluster1.length * cluster2.length / (cluster1.length + cluster2.length);
 }
 
 function compareNumbers(a, b) {
@@ -104,7 +108,7 @@ function median(values, alreadySorted) {
 var defaultOptions = {
     disFunc: euclidean,
     kind: 'single',
-    isDistanceMatrix:false
+    isDistanceMatrix: false
 
 };
 
@@ -119,13 +123,13 @@ function agnes(data, options) {
     options = Object.assign({}, defaultOptions, options);
     var len = data.length;
     var distance = data;//If source
-    if(!options.isDistanceMatrix) {
+    if (!options.isDistanceMatrix) {
         distance = distanceMatrix(data, options.disFunc);
     }
 
 
     // allows to use a string or a given function
-    if (typeof options.kind === "string") {
+    if (typeof options.kind === 'string') {
         switch (options.kind) {
             case 'single':
                 options.kind = simpleLink;
@@ -145,14 +149,15 @@ function agnes(data, options) {
             default:
                 throw new RangeError('Unknown kind of similarity');
         }
-    }
-    else if (typeof options.kind !== "function")
+    } else if (typeof options.kind !== 'function') {
         throw new TypeError('Undefined kind of similarity');
+    }
 
     var list = new Array(len);
-    for (var i = 0; i < distance.length; i++)
+    for (var i = 0; i < distance.length; i++) {
         list[i] = new ClusterLeaf(i);
-    var min  = 10e5,
+    }
+    var min = 10e5,
         d = {},
         dis = 0;
 
@@ -160,28 +165,29 @@ function agnes(data, options) {
         // calculates the minimum distance
         d = {};
         min = 10e5;
-        for (var j = 0; j < list.length; j++){
+        for (var j = 0; j < list.length; j++) {
             for (var k = j + 1; k < list.length; k++) {
                 var fdistance, sdistance;
-                if (list[j] instanceof ClusterLeaf)
+                if (list[j] instanceof ClusterLeaf) {
                     fdistance = [list[j].index];
-                else {
+                } else {
                     fdistance = new Array(list[j].index.length);
-                    for (var e = 0; e < fdistance.length; e++)
+                    for (var e = 0; e < fdistance.length; e++) {
                         fdistance[e] = list[j].index[e].index;
+                    }
                 }
-                if (list[k] instanceof ClusterLeaf)
+                if (list[k] instanceof ClusterLeaf) {
                     sdistance = [list[k].index];
-                else {
+                } else {
                     sdistance = new Array(list[k].index.length);
-                    for (var f = 0; f < sdistance.length; f++)
+                    for (var f = 0; f < sdistance.length; f++) {
                         sdistance[f] = list[k].index[f].index;
+                    }
                 }
                 dis = options.kind(fdistance, sdistance, distance).toFixed(4);
                 if (dis in d) {
                     d[dis].push([list[j], list[k]]);
-                }
-                else {
+                } else {
                     d[dis] = [[list[j], list[k]]];
                 }
                 min = Math.min(dis, min);
@@ -195,17 +201,17 @@ function agnes(data, options) {
         while (dmin.length > 0) {
             aux = dmin.shift();
             for (var q = 0; q < dmin.length; q++) {
-                var int = dmin[q].filter(function(n) {
+                var int = dmin[q].filter(function (n) {
                     //noinspection JSReferencingMutableVariableFromClosure
-                    return aux.indexOf(n) !== -1
+                    return aux.indexOf(n) !== -1;
                 });
                 if (int.length > 0) {
-                    var diff = dmin[q].filter(function(n) {
+                    var diff = dmin[q].filter(function (n) {
                         //noinspection JSReferencingMutableVariableFromClosure
-                        return aux.indexOf(n) === -1
+                        return aux.indexOf(n) === -1;
                     });
                     aux = aux.concat(diff);
-                    dmin.splice(q-- ,1);
+                    dmin.splice(q--, 1);
                 }
             }
             clustered[count++] = aux;
@@ -219,9 +225,9 @@ function agnes(data, options) {
             obj.index = new Array(len);
             var indCount = 0;
             for (var jj = 0; jj < clustered[ii].length; jj++) {
-                if (clustered[ii][jj] instanceof ClusterLeaf)
+                if (clustered[ii][jj] instanceof ClusterLeaf) {
                     obj.index[indCount++] = clustered[ii][jj];
-                else {
+                } else {
                     indCount += clustered[ii][jj].index.length;
                     obj.index = clustered[ii][jj].index.concat(obj.index);
                 }
