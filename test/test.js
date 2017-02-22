@@ -1,10 +1,16 @@
+'use strict';
+
 var hclust = require('..');
 const data = require('./data');
 describe('Hierarchical clustering test', function () {
-
     it('AGNES test', function () {
         var agnes = hclust.agnes(data.features1);
         agnes.distance.should.be.approximately(3.1623, 0.001);
+    });
+
+    it('AGNES second test', function () {
+        var clust = hclust.agnes(data.distanceMatrix2, {isDistanceMatrix:true});
+        clust.distance.should.not.be.greaterThan(1);
     });
 
     it('AGNES based on distance matrix test', function () {
