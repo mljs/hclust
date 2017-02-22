@@ -8,7 +8,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --require should --reporter mocha-better-spec-reporter --recursive"
+    "test": "mocha --require should --reporter mocha-better-spec-reporter --recursive",
+    "eslint": "eslint src",
+    "eslint-fix": "eslint src --fix"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,9 @@
   },
   "homepage": "https://github.com/mljs/hclust",
   "devDependencies": {
+    "eslint": "^3.16.0",
+    "eslint-config-cheminfo": "^1.6.0",
+    "eslint-plugin-no-only-tests": "^1.1.0",
     "mocha": "^3.0.2",
     "mocha-better-spec-reporter": "^3.0.2",
     "should": "^11.1.0"
