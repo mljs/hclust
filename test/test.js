@@ -13,6 +13,19 @@ describe('Hierarchical clustering test', function () {
         clust.distance.should.not.be.greaterThan(1);
     });
 
+    it('AGNES centroid', function () {
+        var clust = hclust.agnes(data.distanceMatrix2, {
+            isDistanceMatrix: true,
+            kind: 'centroid'
+        });
+
+        clust.traverse(function(node) {
+            node.distance.should.be.a.Number();
+            node.distance.should.not.be.NaN();
+            node.distance.should.not.be.lessThan(0);
+        });
+    });
+
     it('AGNES based on distance matrix test', function () {
         var agnes = hclust.agnes(data.distanceMatrix1, {isDistanceMatrix:true});
         agnes.distance.should.be.approximately(3.1623, 0.001);

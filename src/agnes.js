@@ -69,7 +69,7 @@ function centroidLink(cluster1, cluster2, disFun) {
     var dist = new Array(cluster1.length * cluster2.length);
     for (var i = 0; i < cluster1.length; i++) {
         for (var j = 0; j < cluster2.length; j++) {
-            dist[i * cluster1.length + j] = (disFun[cluster1[i]][ cluster2[j]]);
+            dist[i * cluster2.length + j] = (disFun[cluster1[i]][ cluster2[j]]);
         }
     }
     return median(dist);
