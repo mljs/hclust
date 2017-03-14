@@ -40,6 +40,41 @@ Cluster.prototype.cut = function (threshold) {
 Cluster.prototype.group = function (minGroups) {
     if (!Number.isInteger(minGroups) || minGroups < 1) throw new RangeError('Number of groups must be a positive integer');
 
+    var root = new Cluster();
+    root.children = this.children;
+    root.distance = this.distance;
+    root.index = this.index;
+
+    const heap = new Heap(function (a, b) {
+        return b.distance - a.distance;
+    });
+
+    heap.push(root);
+
+    let listLeafs = [];
+    while ((heap.size() + listLeafs.length) < minGroups && heap.size() > 0) {
+        var first = heap.pop();
+        if (first.children.length === 0) {
+            listLeafs.push(first);
+        }
+        else {
+            first.children.forEach(child => heap.push(child));
+        }
+    }
+    if (heap.size() === 0) throw new RangeError('Number of groups too big');
+
+    root.children = listLeafs.concat(heap.toArray());
+    return root;
+};
+
+/**
+ * Merge the roots in the minimum way to have 'minGroups' number of clusters
+ * @param {number} minGroups
+ * @return {Cluster}
+ */
+Cluster.prototype.automaticCut = function (minGroups) {
+    if (!Number.isInteger(minGroups) || minGroups < 1) throw new RangeError('Number of groups must be a positive integer');
+
     const heap = new Heap(function (a, b) {
         return b.distance - a.distance;
     });
