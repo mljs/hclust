@@ -113,7 +113,7 @@ function median(values, alreadySorted) {
  * @param {Array<Array<number>>} distance - Array of points to be clustered
  * @param {object} [options]
  * @param {Function} [options.distanceFunction]
- * @param {string} [options.kind]
+ * @param {string} [options.method]
  * @param {boolean} [options.isDistanceMatrix]
  * @option isDistanceMatrix: Is the input a distance matrix?
  * @constructor
@@ -121,10 +121,10 @@ function median(values, alreadySorted) {
 export function agnes(data, options = {}) {
   const {
     distanceFunction = euclidean,
-    kind = 'single',
+    method = 'single',
     isDistanceMatrix = false
   } = options;
-  let kindFunc;
+  let methodFunc;
 
   var len = data.length;
   var distance = data; // If source
@@ -133,28 +133,28 @@ export function agnes(data, options = {}) {
   }
 
   // allows to use a string or a given function
-  if (typeof kind === 'string') {
-    switch (kind) {
+  if (typeof method === 'string') {
+    switch (method) {
       case 'single':
-        kindFunc = simpleLink;
+        methodFunc = simpleLink;
         break;
       case 'complete':
-        kindFunc = completeLink;
+        methodFunc = completeLink;
         break;
       case 'average':
-        kindFunc = averageLink;
+        methodFunc = averageLink;
         break;
       case 'centroid':
-        kindFunc = centroidLink;
+        methodFunc = centroidLink;
         break;
       case 'ward':
-        kindFunc = wardLink;
+        methodFunc = wardLink;
         break;
       default:
-        throw new RangeError(`unknown kind of linkage: ${kind}`);
+        throw new RangeError(`unknown clustering method: ${method}`);
     }
-  } else if (typeof kind !== 'function') {
-    throw new TypeError('kind must be a string or function');
+  } else if (typeof method !== 'function') {
+    throw new TypeError('method must be a string or function');
   }
 
   var list = new Array(len);
@@ -188,7 +188,7 @@ export function agnes(data, options = {}) {
             sdistance[f] = list[k].index[f].index;
           }
         }
-        dis = kindFunc(fdistance, sdistance, distance).toFixed(4);
+        dis = methodFunc(fdistance, sdistance, distance).toFixed(4);
         if (dis in d) {
           d[dis].push([list[j], list[k]]);
         } else {

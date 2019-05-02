@@ -16,7 +16,7 @@ describe('Hierarchical clustering test', function () {
   it('AGNES centroid', function () {
     var clust = agnes(data.distanceMatrix2, {
       isDistanceMatrix: true,
-      kind: 'centroid'
+      method: 'centroid'
     });
 
     clust.traverse(function (node) {

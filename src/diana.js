@@ -73,7 +73,6 @@ function intrDist(index, data, disFun) {
  * @param {Array <Array <number>>} data - Array of points to be clustered
  * @param {object} [options]
  * @param {Function} [options.distanceFunction]
- * @param {string} [options.kind]
  * @constructor
  */
 export function diana(data, options = {}) {

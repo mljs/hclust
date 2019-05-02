@@ -1,18 +1,18 @@
 declare module 'ml-hclust' {
-  export type LinkageKind =
+  export type AgglomerationMethod =
     | 'single'
     | 'complete'
     | 'average'
     | 'centroid'
     | 'ward';
   export interface AgnesOptions {
-    distanceFunction: (a: number[], b: number[]) => number;
-    kind: LinkageKind;
+    distanceFunction: (a: T, b: T) => number;
+    method: AgglomerationMethod;
     isDistanceMatrix: boolean;
   }
 
-  export interface DianaOptions {
-    distanceFunction: (a: number[], b: number[]) => number;
+  export interface DianaOptions<T> {
+    distanceFunction: (a: T, b: T) => number;
   }
 
   export interface Cluster {
@@ -24,6 +24,12 @@ declare module 'ml-hclust' {
     traverse: (cb: (cluster: Cluster) => void) => void;
   }
 
-  export function agnes(data: number[][], options?: AgnesOptions): Cluster;
-  export function diana(data: number[][], options?: DianaOptions): Cluster;
+  export function agnes<T = number[]>(
+    data: T[],
+    options?: AgnesOptions<T>
+  ): Cluster;
+  export function diana<T = number[]>(
+    data: T[],
+    options?: DianaOptions<T>
+  ): Cluster;
 }
