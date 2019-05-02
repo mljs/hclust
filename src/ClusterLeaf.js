@@ -1,15 +1,10 @@
-'use strict';
+import Cluster from './Cluster';
 
-const Cluster = require('./Cluster');
-const util = require('util');
-
-function ClusterLeaf(index) {
-    Cluster.call(this);
+export default class ClusterLeaf extends Cluster {
+  constructor(index) {
+    super();
     this.index = index;
     this.distance = 0;
     this.children = [];
+  }
 }
-
-util.inherits(ClusterLeaf, Cluster);
-
-module.exports = ClusterLeaf;

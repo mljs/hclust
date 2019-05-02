@@ -1,17 +1,24 @@
 {
   "name": "ml-hclust",
   "version": "1.3.0",
-  "description": "Hierarchical clustering algorithms in Javascript",
-  "main": "src/index.js",
-  "directories": {
-    "lib": "src",
-    "test": "test"
-  },
+  "description": "Hierarchical clustering algorithms",
+  "main": "hclust.js",
+  "module": "src/index.js",
+  "types": "hclust.d.ts",
+  "sideEffects": false,
+  "files": [
+    "hclust.js",
+    "hclust.d.ts",
+    "src"
+  ],
   "scripts": {
-    "test": "npm run eslint && npm run test-mocha",
-    "test-mocha": "mocha --require should --reporter mocha-better-spec-reporter --recursive",
+    "compile": "rollup -c",
     "eslint": "eslint src",
-    "eslint-fix": "eslint src --fix"
+    "eslint-fix": "eslint src --fix",
+    "prepublishOnly": "npm run compile",
+    "test": "npm run test-coverage && npm run eslint",
+    "test-only": "jest",
+    "test-coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -34,16 +41,17 @@
   },
   "homepage": "https://github.com/mljs/hclust",
   "devDependencies": {
-    "eslint": "^3.16.0",
-    "eslint-config-cheminfo": "^1.6.0",
-    "eslint-plugin-no-only-tests": "^1.1.0",
-    "mocha": "^3.0.2",
-    "mocha-better-spec-reporter": "^3.0.2",
-    "should": "^11.1.0"
+    "@babel/plugin-transform-modules-commonjs": "^7.4.4",
+    "eslint": "^5.16.0",
+    "eslint-config-cheminfo": "^1.20.1",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jest": "^22.5.1",
+    "jest": "^24.7.1",
+    "rollup": "^1.10.1"
   },
   "dependencies": {
     "heap": "^0.2.6",
-    "ml-distance-euclidean": "^1.0.0",
+    "ml-distance-euclidean": "^2.0.0",
     "ml-distance-matrix": "^1.0.0"
   }
 }
