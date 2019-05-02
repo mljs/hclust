@@ -5,116 +5,6 @@ import Cluster from './Cluster';
 
 /**
  * @private
- * @param {Array <Array <number>>} cluster1
- * @param {Array <Array <number>>} cluster2
- * @param {function} disFun
- * @returns {number}
- */
-function simpleLink(cluster1, cluster2, disFun) {
-  var m = 10e100;
-  for (var i = 0; i < cluster1.length; i++) {
-    for (var j = i; j < cluster2.length; j++) {
-      var d = disFun(cluster1[i], cluster2[j]);
-      m = Math.min(d, m);
-    }
-  }
-  return m;
-}
-
-/**
- * @private
- * @param {Array <Array <number>>} cluster1
- * @param {Array <Array <number>>} cluster2
- * @param {function} disFun
- * @returns {number}
- */
-function completeLink(cluster1, cluster2, disFun) {
-  var m = -1;
-  for (var i = 0; i < cluster1.length; i++) {
-    for (var j = i; j < cluster2.length; j++) {
-      var d = disFun(cluster1[i], cluster2[j]);
-      m = Math.max(d, m);
-    }
-  }
-  return m;
-}
-
-/**
- * @private
- * @param {Array <Array <number>>} cluster1
- * @param {Array <Array <number>>} cluster2
- * @param {function} disFun
- * @returns {number}
- */
-function averageLink(cluster1, cluster2, disFun) {
-  var m = 0;
-  for (var i = 0; i < cluster1.length; i++) {
-    for (var j = 0; j < cluster2.length; j++) {
-      m += disFun(cluster1[i], cluster2[j]);
-    }
-  }
-  return m / (cluster1.length * cluster2.length);
-}
-
-/**
- * @private
- * @param {Array <Array <number>>} cluster1
- * @param {Array <Array <number>>} cluster2
- * @param {function} disFun
- * @returns {number}
- */
-function centroidLink(cluster1, cluster2, disFun) {
-  var x1 = 0;
-  var y1 = 0;
-  var x2 = 0;
-  var y2 = 0;
-  for (var i = 0; i < cluster1.length; i++) {
-    x1 += cluster1[i][0];
-    y1 += cluster1[i][1];
-  }
-  for (var j = 0; j < cluster2.length; j++) {
-    x2 += cluster2[j][0];
-    y2 += cluster2[j][1];
-  }
-  x1 /= cluster1.length;
-  y1 /= cluster1.length;
-  x2 /= cluster2.length;
-  y2 /= cluster2.length;
-  return disFun([x1, y1], [x2, y2]);
-}
-
-/**
- * @private
- * @param {Array <Array <number>>} cluster1
- * @param {Array <Array <number>>} cluster2
- * @param {function} disFun
- * @returns {number}
- */
-function wardLink(cluster1, cluster2, disFun) {
-  var x1 = 0;
-  var y1 = 0;
-  var x2 = 0;
-  var y2 = 0;
-  for (var i = 0; i < cluster1.length; i++) {
-    x1 += cluster1[i][0];
-    y1 += cluster1[i][1];
-  }
-  for (var j = 0; j < cluster2.length; j++) {
-    x2 += cluster2[j][0];
-    y2 += cluster2[j][1];
-  }
-  x1 /= cluster1.length;
-  y1 /= cluster1.length;
-  x2 /= cluster2.length;
-  y2 /= cluster2.length;
-  return (
-    (disFun([x1, y1], [x2, y2]) * cluster1.length * cluster2.length) /
-    (cluster1.length + cluster2.length)
-  );
-}
-
-/**
- * @private
  * Returns the most distant point and his distance
  * @param {Array <Array <number>>} splitting - Clusters to split
  * @param {Array <Array <number>>} data - Original data
@@ -158,11 +48,6 @@ function diff(splitting, data, disFun) {
   return ans;
 }
 
-var defaultOptions = {
-  dist: euclidean,
-  kind: 'single'
-};
-
 /**
  * @private
  * Intra-cluster distance
@@ -186,34 +71,13 @@ function intrDist(index, data, disFun) {
 /**
  * Splits the higher level clusters
  * @param {Array <Array <number>>} data - Array of points to be clustered
- * @param {json} options
+ * @param {object} [options]
+ * @param {Function} [options.distanceFunction]
+ * @param {string} [options.kind]
  * @constructor
  */
-export function diana(data, options) {
-  options = Object.assign({}, defaultOptions, options);
-  if (typeof options.kind === 'string') {
-    switch (options.kind) {
-      case 'single':
-        options.kind = simpleLink;
-        break;
-      case 'complete':
-        options.kind = completeLink;
-        break;
-      case 'average':
-        options.kind = averageLink;
-        break;
-      case 'centroid':
-        options.kind = centroidLink;
-        break;
-      case 'ward':
-        options.kind = wardLink;
-        break;
-      default:
-        throw new RangeError('Unknown kind of similarity');
-    }
-  } else if (typeof options.kind !== 'function') {
-    throw new TypeError('Undefined kind of similarity');
-  }
+export function diana(data, options = {}) {
+  const { distanceFunction = euclidean } = options;
   var tree = new Cluster();
   tree.children = new Array(data.length);
   tree.index = new Array(data.length);
@@ -222,7 +86,7 @@ export function diana(data, options) {
     tree.index[ind] = new ClusterLeaf(ind);
   }
 
-  tree.distance = intrDist(tree.index, data, options.dist);
+  tree.distance = intrDist(tree.index, data, distanceFunction);
   var m, M, clId, dist, rebel;
   var list = [tree];
   while (list.length > 0) {
@@ -233,7 +97,7 @@ export function diana(data, options) {
       for (var j = 0; j < list[i].length; j++) {
         for (var l = j + 1; l < list[i].length; l++) {
           m = Math.max(
-            options.dist(
+            distanceFunction(
               data[list[i].index[j].index],
               data[list[i].index[l].index]
             ),
@@ -249,7 +113,7 @@ export function diana(data, options) {
     M = 0;
     if (list[clId].index.length === 2) {
       list[clId].children = [list[clId].index[0], list[clId].index[1]];
-      list[clId].distance = options.dist(
+      list[clId].distance = distanceFunction(
         data[list[clId].index[0].index],
         data[list[clId].index[1].index]
       );
@@ -260,11 +124,11 @@ export function diana(data, options) {
         list[clId].index[2]
       ];
       var d = [
-        options.dist(
+        distanceFunction(
           data[list[clId].index[0].index],
           data[list[clId].index[1].index]
         ),
-        options.dist(
+        distanceFunction(
           data[list[clId].index[1].index],
           data[list[clId].index[2].index]
         )
@@ -281,7 +145,7 @@ export function diana(data, options) {
         dist = 0;
         for (var jj = 0; jj < splitting[0].length; jj++) {
           if (ii !== jj) {
-            dist += options.dist(
+            dist += distanceFunction(
               data[list[clId].index[splitting[0][jj]].index],
               data[list[clId].index[splitting[0][ii]].index]
             );
@@ -295,11 +159,11 @@ export function diana(data, options) {
       }
       splitting[1] = [rebel];
       splitting[0].splice(rebel, 1);
-      dist = diff(splitting, data, options.dist);
+      dist = diff(splitting, data, distanceFunction);
       while (dist.d > 0) {
         splitting[1].push(splitting[0][dist.p]);
         splitting[0].splice(dist.p, 1);
-        dist = diff(splitting, data, options.dist);
+        dist = diff(splitting, data, distanceFunction);
       }
       var fData = new Array(splitting[0].length);
       C.index = new Array(splitting[0].length);
@@ -315,8 +179,8 @@ export function diana(data, options) {
         sG.index[f] = list[clId].index[splitting[1][f]];
         sG.children[f] = list[clId].index[splitting[1][f]];
       }
-      C.distance = intrDist(C.index, data, options.dist);
-      sG.distance = intrDist(sG.index, data, options.dist);
+      C.distance = intrDist(C.index, data, distanceFunction);
+      sG.distance = intrDist(sG.index, data, distanceFunction);
       list.push(C);
       list.push(sG);
       list[clId].children = [C, sG];

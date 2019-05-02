@@ -108,50 +108,53 @@ function median(values, alreadySorted) {
   }
 }
 
-var defaultOptions = {
-  disFunc: euclidean,
-  kind: 'single',
-  isDistanceMatrix: false
-};
-
 /**
  * Continuously merge nodes that have the least dissimilarity
- * @param {Array <Array <number>>} distance - Array of points to be clustered
- * @param {json} options
+ * @param {Array<Array<number>>} distance - Array of points to be clustered
+ * @param {object} [options]
+ * @param {Function} [options.distanceFunction]
+ * @param {string} [options.kind]
+ * @param {boolean} [options.isDistanceMatrix]
  * @option isDistanceMatrix: Is the input a distance matrix?
  * @constructor
  */
-export function agnes(data, options) {
-  options = Object.assign({}, defaultOptions, options);
+export function agnes(data, options = {}) {
+  const {
+    distanceFunction = euclidean,
+    kind = 'single',
+    isDistanceMatrix = false
+  } = options;
+  let kindFunc;
+
   var len = data.length;
   var distance = data; // If source
-  if (!options.isDistanceMatrix) {
-    distance = distanceMatrix(data, options.disFunc);
+  if (!isDistanceMatrix) {
+    distance = distanceMatrix(data, distanceFunction);
   }
 
   // allows to use a string or a given function
-  if (typeof options.kind === 'string') {
-    switch (options.kind) {
+  if (typeof kind === 'string') {
+    switch (kind) {
       case 'single':
-        options.kind = simpleLink;
+        kindFunc = simpleLink;
         break;
       case 'complete':
-        options.kind = completeLink;
+        kindFunc = completeLink;
         break;
       case 'average':
-        options.kind = averageLink;
+        kindFunc = averageLink;
         break;
       case 'centroid':
-        options.kind = centroidLink;
+        kindFunc = centroidLink;
         break;
       case 'ward':
-        options.kind = wardLink;
+        kindFunc = wardLink;
         break;
       default:
-        throw new RangeError('Unknown kind of similarity');
+        throw new RangeError(`unknown kind of linkage: ${kind}`);
     }
-  } else if (typeof options.kind !== 'function') {
-    throw new TypeError('Undefined kind of similarity');
+  } else if (typeof kind !== 'function') {
+    throw new TypeError('kind must be a string or function');
   }
 
   var list = new Array(len);
@@ -185,7 +188,7 @@ export function agnes(data, options) {
             sdistance[f] = list[k].index[f].index;
           }
         }
-        dis = options.kind(fdistance, sdistance, distance).toFixed(4);
+        dis = kindFunc(fdistance, sdistance, distance).toFixed(4);
         if (dis in d) {
           d[dis].push([list[j], list[k]]);
         } else {
