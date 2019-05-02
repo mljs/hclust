@@ -3,5 +3,6 @@ export default {
   output: {
     file: 'hclust.js',
     format: 'cjs'
-  }
+  },
+  external: ['ml-distance-euclidean', 'ml-distance-matrix', 'heap']
 };

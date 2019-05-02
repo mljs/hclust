@@ -28,3 +28,5 @@ node_modules
 
 # webstorm generated files
 .idea
+
+hclust.js
