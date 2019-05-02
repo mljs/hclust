@@ -1,3 +1,21 @@
+# [2.0.0](https://github.com/mljs/hclust/compare/v1.3.0...v2.0.0) (2019-05-02)
+
+
+### Code Refactoring
+
+* **agnes:** rename `options.kind` to `options.method` ([acabbe6](https://github.com/mljs/hclust/commit/acabbe6))
+* rework options and write TS definitions ([f49c7af](https://github.com/mljs/hclust/commit/f49c7af))
+* rewrite project as ESM and use rollup ([f02ad0a](https://github.com/mljs/hclust/commit/f02ad0a))
+
+
+### BREAKING CHANGES
+
+* **agnes:** `options.kind` was renamed to `options.method` in `agnes`.
+* the `disFunc` option was renamed to `distanceFunction`.
+* Node.js 4 and 6 are no longer supported.
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/mljs/hclust/compare/v1.2.1...v1.3.0) (2017-02-22)
 
