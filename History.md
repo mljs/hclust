@@ -1,3 +1,12 @@
+## [2.0.1](https://github.com/mljs/hclust/compare/v2.0.0...v2.0.1) (2019-07-10)
+
+
+### Bug Fixes
+
+* correct TS definitions ([f50d820](https://github.com/mljs/hclust/commit/f50d820))
+
+
+
 # [2.0.0](https://github.com/mljs/hclust/compare/v1.3.0...v2.0.0) (2019-05-02)
 
 
