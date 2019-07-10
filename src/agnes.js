@@ -1,5 +1,6 @@
 import { euclidean } from 'ml-distance-euclidean';
 import distanceMatrix from 'ml-distance-matrix';
+import median from 'ml-array-median';
 
 import ClusterLeaf from './ClusterLeaf';
 import Cluster from './Cluster';
@@ -90,24 +91,6 @@ function wardLink(cluster1, cluster2, disFun) {
   );
 }
 
-function compareNumbers(a, b) {
-  return a - b;
-}
-
-function median(values, alreadySorted) {
-  if (alreadySorted === undefined) alreadySorted = false;
-  if (!alreadySorted) {
-    values = [].concat(values).sort(compareNumbers);
-  }
-  var l = values.length;
-  var half = Math.floor(l / 2);
-  if (l % 2 === 0) {
-    return (values[half - 1] + values[half]) * 0.5;
-  } else {
-    return values[half];
-  }
-}
-
 /**
  * Continuously merge nodes that have the least dissimilarity
  * @param {Array<Array<number>>} distance - Array of points to be clustered
@@ -122,7 +105,7 @@ export function agnes(data, options = {}) {
   const {
     distanceFunction = euclidean,
     method = 'single',
-    isDistanceMatrix = false
+    isDistanceMatrix = false,
   } = options;
   let methodFunc;
 
@@ -203,10 +186,10 @@ export function agnes(data, options = {}) {
     var count = 0;
     while (dmin.length > 0) {
       let aux = dmin.shift();
-      const filterInt = function (n) {
+      const filterInt = (n) => {
         return aux.indexOf(n) !== -1;
       };
-      const filterDiff = function (n) {
+      const filterDiff = (n) => {
         return aux.indexOf(n) === -1;
       };
       for (var q = 0; q < dmin.length; q++) {

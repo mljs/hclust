@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "heap": "^0.2.6",
+    "ml-array-median": "^1.1.1",
     "ml-distance-euclidean": "^2.0.0",
     "ml-distance-matrix": "^1.0.0"
   }
