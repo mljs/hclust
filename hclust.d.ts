@@ -6,13 +6,13 @@ export type AgglomerationMethod =
   | 'ward';
 
 export interface AgnesOptions<T> {
-  distanceFunction: (a: T, b: T) => number;
-  method: AgglomerationMethod;
-  isDistanceMatrix: boolean;
+  distanceFunction?: (a: T, b: T) => number;
+  method?: AgglomerationMethod;
+  isDistanceMatrix?: boolean;
 }
 
 export interface DianaOptions<T> {
-  distanceFunction: (a: T, b: T) => number;
+  distanceFunction?: (a: T, b: T) => number;
 }
 
 export interface Cluster {
