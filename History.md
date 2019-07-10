@@ -1,3 +1,13 @@
+## [2.0.3](https://github.com/mljs/hclust/compare/v2.0.2...v2.0.3) (2019-07-10)
+
+
+### Bug Fixes
+
+* correct definitions of options interfaces ([b07d3a4](https://github.com/mljs/hclust/commit/b07d3a4))
+* improve performance of ward algorithm ([3bad3b6](https://github.com/mljs/hclust/commit/3bad3b6))
+
+
+
 ## [2.0.2](https://github.com/mljs/hclust/compare/v2.0.1...v2.0.2) (2019-07-10)
 
 
