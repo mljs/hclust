@@ -18,18 +18,24 @@ export interface DianaOptions<T> {
 export interface Cluster {
   children: Cluster[];
   distance: number;
-  index: number[];
+  index: ClusterLeaf[];
   cut: (threshold: number) => Cluster[];
   group: (minGroups: number) => Cluster;
   traverse: (cb: (cluster: Cluster) => void) => void;
 }
 
+export interface ClusterLeaf extends Cluster {
+  children: [];
+  distance: 0;
+  index: number;
+}
+
 export function agnes<T = number[]>(
   data: T[],
-  options?: AgnesOptions<T>
+  options?: AgnesOptions<T>,
 ): Cluster;
 
 export function diana<T = number[]>(
   data: T[],
-  options?: DianaOptions<T>
+  options?: DianaOptions<T>,
 ): Cluster;
