@@ -8,7 +8,7 @@ Hierarchical clustering algorithms in JavaScript.
 
 ## Installation
 
-`npm install ml-hclust`
+`npm i ml-hclust`
 
 ## [API Documentation](https://mljs.github.io/hclust/)
 

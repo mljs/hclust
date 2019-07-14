@@ -41,18 +41,19 @@
   },
   "homepage": "https://github.com/mljs/hclust",
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.4.4",
-    "eslint": "^5.16.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
+    "eslint": "^6.0.1",
     "eslint-config-cheminfo": "^1.20.1",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-jest": "^22.5.1",
-    "jest": "^24.7.1",
-    "rollup": "^1.10.1"
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jest": "^22.7.2",
+    "esm": "^3.2.25",
+    "jest": "^24.8.0",
+    "rollup": "^1.16.7"
   },
   "dependencies": {
     "heap": "^0.2.6",
-    "ml-array-median": "^1.1.1",
     "ml-distance-euclidean": "^2.0.0",
-    "ml-distance-matrix": "^1.0.0"
+    "ml-distance-matrix": "^2.0.0",
+    "ml-matrix": "^6.1.2"
   }
 }
