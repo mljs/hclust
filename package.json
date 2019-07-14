@@ -1,6 +1,6 @@
 {
   "name": "ml-hclust",
-  "version": "2.0.3",
+  "version": "3.0.0-0",
   "description": "Hierarchical clustering algorithms",
   "main": "hclust.js",
   "module": "src/index.js",
