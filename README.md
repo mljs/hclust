@@ -32,6 +32,7 @@ npm test
 ## Authors
 
 - [Miguel Asencio](https://github.com/maasencioh)
+- [Michael Zasso](https://github.com/targos)
 
 ## License
 

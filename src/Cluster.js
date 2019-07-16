@@ -1,4 +1,4 @@
-// import Heap from 'heap';
+import Heap from 'heap';
 
 export default class Cluster {
   constructor() {
@@ -10,64 +10,64 @@ export default class Cluster {
   }
 
   /**
-   * Creates an array of values where maximum distance smaller than the threshold
+   * Creates an array of clusters where the maximum height is smaller than the threshold
    * @param {number} threshold
-   * @return {Array <Cluster>}
+   * @return {Array<Cluster>}
    */
-  // cut(threshold) {
-  //   if (threshold < 0) throw new RangeError('Threshold too small');
-  //   var root = new Cluster();
-  //   root.children = this.children;
-  //   root.distance = this.distance;
-  //   root.index = this.index;
-  //   var list = [root];
-  //   var ans = [];
-  //   while (list.length > 0) {
-  //     var aux = list.shift();
-  //     if (threshold >= aux.distance) {
-  //       ans.push(aux);
-  //     } else {
-  //       list = list.concat(aux.children);
-  //     }
-  //   }
-  //   return ans;
-  // }
+  cut(threshold) {
+    if (typeof threshold !== 'number') {
+      throw new TypeError('threshold must be a number');
+    }
+    if (threshold < 0) {
+      throw new RangeError('threshold must be a positive number');
+    }
+    let list = [this];
+    const ans = [];
+    while (list.length > 0) {
+      const aux = list.shift();
+      if (threshold >= aux.height) {
+        ans.push(aux);
+      } else {
+        list = list.concat(aux.children);
+      }
+    }
+    return ans;
+  }
 
   /**
-   * Merge the leaves in the minimum way to have 'minGroups' number of clusters
-   * @param {number} minGroups - Them minimum number of children the first level of the tree should have
+   * Merge the leaves in the minimum way to have `groups` number of clusters.
+   * @param {number} groups - Them number of children the first level of the tree should have.
    * @return {Cluster}
    */
-  // group(minGroups) {
-  //   if (!Number.isInteger(minGroups) || minGroups < 1) {
-  //     throw new RangeError('Number of groups must be a positive integer');
-  //   }
+  group(groups) {
+    if (!Number.isInteger(groups) || groups < 1) {
+      throw new RangeError('groups must be a positive integer');
+    }
 
-  //   const heap = new Heap(function(a, b) {
-  //     return b.distance - a.distance;
-  //   });
+    const heap = new Heap((a, b) => {
+      return b.height - a.height;
+    });
 
-  //   heap.push(this);
+    heap.push(this);
 
-  //   while (heap.size() < minGroups) {
-  //     var first = heap.pop();
-  //     if (first.children.length === 0) {
-  //       break;
-  //     }
-  //     first.children.forEach((child) => heap.push(child));
-  //   }
+    while (heap.size() < groups) {
+      var first = heap.pop();
+      if (first.children.length === 0) {
+        break;
+      }
+      first.children.forEach((child) => heap.push(child));
+    }
 
-  //   var root = new Cluster();
-  //   root.children = heap.toArray();
-  //   root.distance = this.distance;
+    var root = new Cluster();
+    root.children = heap.toArray();
+    root.height = this.height;
 
-  //   return root;
-  // }
+    return root;
+  }
 
   /**
    * Traverses the tree depth-first and calls the provided callback with each individual node
    * @param {function} cb - The callback to be called on each node encounter
-   * @type {Cluster}
    */
   traverse(cb) {
     function visit(root, callback) {

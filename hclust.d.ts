@@ -27,8 +27,8 @@ export interface Cluster {
   size: number;
   index: number;
   isLeaf: boolean;
-  // cut: (threshold: number) => Cluster[];
-  // group: (minGroups: number) => Cluster;
+  cut: (threshold: number) => Cluster[];
+  group: (groups: number) => Cluster;
   traverse: (cb: (cluster: Cluster) => void) => void;
 }
 
