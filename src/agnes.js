@@ -52,14 +52,14 @@ function wardLink2(dKI, dKJ, dIJ, ni, nj, nk) {
  * @param {Array<Array<number>>} data - Array of points to be clustered
  * @param {object} [options]
  * @param {Function} [options.distanceFunction]
- * @param {string} [options.method]
+ * @param {string} [options.method] - Default: `'complete'`
  * @param {boolean} [options.isDistanceMatrix] - Is the input already a distance matrix?
  * @constructor
  */
 export function agnes(data, options = {}) {
   const {
     distanceFunction = euclidean,
-    method = 'single',
+    method = 'complete',
     isDistanceMatrix = false,
   } = options;
 
