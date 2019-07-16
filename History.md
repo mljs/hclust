@@ -1,3 +1,23 @@
+# [3.0.0](https://github.com/mljs/hclust/compare/v2.0.3...v3.0.0) (2019-07-16)
+
+
+### Code Refactoring
+
+* make AGNES algorithm closer to R ([#11](https://github.com/mljs/hclust/issues/11)) ([1517124](https://github.com/mljs/hclust/commit/1517124))
+
+
+### BREAKING CHANGES
+
+* - use the Lance-Williams algorithm to update cluster distances.
+- add other methods that exist in R.
+- remove `ClusterLeaf` class and use an `isLeaf` property instead.
+- remove `index` array from clusters. Instead, an `indexes()` method has been added to compute it.
+- add a `size` property to clusters that indicates the number of leaves below it.
+- the default `method` is now `'complete'`.
+- DIANA has been removed from the package pending rewriting it.
+
+
+
 ## [2.0.3](https://github.com/mljs/hclust/compare/v2.0.2...v2.0.3) (2019-07-10)
 
 
