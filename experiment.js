@@ -1,11 +1,4 @@
-import distanceMatrix from 'ml-distance-matrix';
-import { euclidean } from 'ml-distance-euclidean';
-
 import { agnes } from './src';
-
-// const m = [[1, 4, 7], [2, 5, 8], [3, 6, 9]];
-
-// const d = distanceMatrix(m, euclidean);
 
 const d = [
   [0, 17, 21, 31, 23],
@@ -16,8 +9,21 @@ const d = [
 ];
 
 const c = agnes(d, {
-  method: 'average',
+  method: 'ward',
   isDistanceMatrix: true,
 });
 
-console.log(require('util').inspect(c, { depth: Infinity, colors: true }));
+const heights = [];
+c.traverse((cluster) => {
+  if (cluster.isLeaf) {
+    console.log(cluster.index + 1);
+  }
+  if (cluster.height > 0) {
+    heights.push(cluster.height);
+  }
+});
+
+heights.sort((h1, h2) => h1 - h2);
+
+console.log(heights);
+// console.log(require('util').inspect(c, { depth: Infinity, colors: true }));

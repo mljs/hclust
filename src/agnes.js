@@ -1,5 +1,5 @@
 import { euclidean } from 'ml-distance-euclidean';
-import distanceMatrix from 'ml-distance-matrix';
+import getDistanceMatrix from 'ml-distance-matrix';
 import { Matrix } from 'ml-matrix';
 
 import Cluster from './Cluster';
@@ -40,6 +40,13 @@ function wardLink(dKI, dKJ, dIJ, ni, nj, nk) {
   return ai * dKI + aj * dKJ + b * dIJ;
 }
 
+function wardLink2(dKI, dKJ, dIJ, ni, nj, nk) {
+  const ai = (ni + nk) / (ni + nj + nk);
+  const aj = (nj + nk) / (ni + nj + nk);
+  const b = -nk / (ni + nj + nk);
+  return Math.sqrt(ai * dKI * dKI + aj * dKJ * dKJ + b * dIJ * dIJ);
+}
+
 /**
  * Continuously merge nodes that have the least dissimilarity
  * @param {Array<Array<number>>} data - Array of points to be clustered
@@ -56,39 +63,42 @@ export function agnes(data, options = {}) {
     isDistanceMatrix = false,
   } = options;
 
-  let methodFunc;
+  let updateFunc;
   if (!isDistanceMatrix) {
-    data = distanceMatrix(data, distanceFunction);
+    data = getDistanceMatrix(data, distanceFunction);
   }
-  let distance = new Matrix(data);
-  const numLeaves = distance.rows;
+  let distanceMatrix = new Matrix(data);
+  const numLeaves = distanceMatrix.rows;
 
   // allows to use a string or a given function
   if (typeof method === 'string') {
     switch (method.toLowerCase()) {
       case 'single':
-        methodFunc = singleLink;
+        updateFunc = singleLink;
         break;
       case 'complete':
-        methodFunc = completeLink;
+        updateFunc = completeLink;
         break;
       case 'average':
       case 'upgma':
-        methodFunc = averageLink;
+        updateFunc = averageLink;
         break;
       case 'wpgma':
-        methodFunc = weightedAverageLink;
+        updateFunc = weightedAverageLink;
         break;
       case 'centroid':
       case 'upgmc':
-        methodFunc = centroidLink;
+        updateFunc = centroidLink;
         break;
       case 'median':
       case 'wpgmc':
-        methodFunc = medianLink;
+        updateFunc = medianLink;
         break;
       case 'ward':
-        methodFunc = wardLink;
+        updateFunc = wardLink;
+        break;
+      case 'ward2':
+        updateFunc = wardLink2;
         break;
       default:
         throw new RangeError(`unknown clustering method: ${method}`);
@@ -106,48 +116,51 @@ export function agnes(data, options = {}) {
   }
 
   for (let n = 0; n < numLeaves - 1; n++) {
-    const [row, column, value] = getSmallestDistance(distance);
+    const [row, column, distance] = getSmallestDistance(distanceMatrix);
     const cluster1 = clusters[row];
     const cluster2 = clusters[column];
     const newCluster = new Cluster();
     newCluster.size = cluster1.size + cluster2.size;
     newCluster.children.push(cluster1, cluster2);
-    newCluster.height = value;
+    newCluster.height = distance;
 
     const newClusters = [newCluster];
-    const newDistance = new Matrix(distance.rows - 1, distance.rows - 1);
+    const newDistanceMatrix = new Matrix(
+      distanceMatrix.rows - 1,
+      distanceMatrix.rows - 1,
+    );
     const previous = (newIndex) =>
       getPreviousIndex(newIndex, Math.min(row, column), Math.max(row, column));
 
-    for (let i = 1; i < newDistance.rows; i++) {
+    for (let i = 1; i < newDistanceMatrix.rows; i++) {
       const prevI = previous(i);
       const prevICluster = clusters[prevI];
       newClusters.push(prevICluster);
       for (let j = 0; j < i; j++) {
         if (j === 0) {
-          const dKI = distance.get(row, prevI);
-          const dKJ = distance.get(prevI, column);
-          const val = methodFunc(
+          const dKI = distanceMatrix.get(row, prevI);
+          const dKJ = distanceMatrix.get(prevI, column);
+          const val = updateFunc(
             dKI,
             dKJ,
-            value,
+            distance,
             cluster1.size,
             cluster2.size,
             prevICluster.size,
           );
-          newDistance.set(i, j, val);
-          newDistance.set(j, i, val);
+          newDistanceMatrix.set(i, j, val);
+          newDistanceMatrix.set(j, i, val);
         } else {
           // Just copy distance from previous matrix
-          const val = distance.get(prevI, previous(j));
-          newDistance.set(i, j, val);
-          newDistance.set(j, i, val);
+          const val = distanceMatrix.get(prevI, previous(j));
+          newDistanceMatrix.set(i, j, val);
+          newDistanceMatrix.set(j, i, val);
         }
       }
     }
 
     clusters = newClusters;
-    distance = newDistance;
+    distanceMatrix = newDistanceMatrix;
   }
 
   return clusters[0];

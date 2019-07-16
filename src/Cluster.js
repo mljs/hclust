@@ -65,19 +65,19 @@ export default class Cluster {
   // }
 
   /**
-   * Traverses the tree depth-first and provide callback to be called on each individual node
+   * Traverses the tree depth-first and calls the provided callback with each individual node
    * @param {function} cb - The callback to be called on each node encounter
    * @type {Cluster}
    */
-  // traverse(cb) {
-  //   function visit(root, callback) {
-  //     callback(root);
-  //     if (root.children) {
-  //       for (var i = root.children.length - 1; i >= 0; i--) {
-  //         visit(root.children[i], callback);
-  //       }
-  //     }
-  //   }
-  //   visit(this, cb);
-  // }
+  traverse(cb) {
+    function visit(root, callback) {
+      callback(root);
+      if (root.children) {
+        for (const child of root.children) {
+          visit(child, callback);
+        }
+      }
+    }
+    visit(this, cb);
+  }
 }

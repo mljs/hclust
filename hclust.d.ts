@@ -8,7 +8,8 @@ export type AgglomerationMethod =
   | 'wpgmc'
   | 'centroid'
   | 'upgmc'
-  | 'ward';
+  | 'ward'
+  | 'ward2';
 
 export interface AgnesOptions<T> {
   distanceFunction?: (a: T, b: T) => number;
@@ -28,7 +29,7 @@ export interface Cluster {
   isLeaf: boolean;
   // cut: (threshold: number) => Cluster[];
   // group: (minGroups: number) => Cluster;
-  // traverse: (cb: (cluster: Cluster) => void) => void;
+  traverse: (cb: (cluster: Cluster) => void) => void;
 }
 
 export function agnes<T = number[]>(
