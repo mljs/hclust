@@ -80,4 +80,19 @@ export default class Cluster {
     }
     visit(this, cb);
   }
+
+  /**
+   * Returns a list of indices for all the leaves of this cluster.
+   * The list is ordered in such a way that a dendrogram could be drawn without crossing branches.
+   * @returns {Array<number>}
+   */
+  indices() {
+    const result = [];
+    this.traverse((cluster) => {
+      if (cluster.isLeaf) {
+        result.push(cluster.index);
+      }
+    });
+    return result;
+  }
 }

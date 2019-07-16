@@ -30,6 +30,7 @@ export interface Cluster {
   cut: (threshold: number) => Cluster[];
   group: (groups: number) => Cluster;
   traverse: (cb: (cluster: Cluster) => void) => void;
+  indices: () => number[];
 }
 
 export function agnes<T = number[]>(

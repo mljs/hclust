@@ -29,14 +29,3 @@ test('AGNES centroid', () => {
     expect(node.height).not.toBeLessThan(0);
   });
 });
-
-test('cut test', () => {
-  const clust = agnes(data.features1);
-  expect(clust.cut(1.5)).toHaveLength(5);
-});
-
-test('group test', () => {
-  const clust = agnes(data.features1);
-  const group = clust.group(8);
-  expect(group.children).toHaveLength(8);
-});
