@@ -1,137 +1,104 @@
 import { euclidean } from 'ml-distance-euclidean';
-import distanceMatrix from 'ml-distance-matrix';
-import median from 'ml-array-median';
+import getDistanceMatrix from 'ml-distance-matrix';
+import { Matrix } from 'ml-matrix';
 
-import ClusterLeaf from './ClusterLeaf';
 import Cluster from './Cluster';
 
-/**
- * @private
- * @param cluster1
- * @param cluster2
- * @param disFun
- * @returns {number}
- */
-function simpleLink(cluster1, cluster2, disFun) {
-  var m = 10e100;
-  for (var i = 0; i < cluster1.length; i++) {
-    for (var j = 0; j < cluster2.length; j++) {
-      var d = disFun[cluster1[i]][cluster2[j]];
-      m = Math.min(d, m);
-    }
-  }
-  return m;
+function singleLink(dKI, dKJ) {
+  return Math.min(dKI, dKJ);
 }
 
-/**
- * @private
- * @param cluster1
- * @param cluster2
- * @param disFun
- * @returns {number}
- */
-function completeLink(cluster1, cluster2, disFun) {
-  var m = -1;
-  for (var i = 0; i < cluster1.length; i++) {
-    for (var j = 0; j < cluster2.length; j++) {
-      var d = disFun[cluster1[i]][cluster2[j]];
-      m = Math.max(d, m);
-    }
-  }
-  return m;
+function completeLink(dKI, dKJ) {
+  return Math.max(dKI, dKJ);
 }
 
-/**
- * @private
- * @param cluster1
- * @param cluster2
- * @param disFun
- * @returns {number}
- */
-function averageLink(cluster1, cluster2, disFun) {
-  var m = 0;
-  for (var i = 0; i < cluster1.length; i++) {
-    for (var j = 0; j < cluster2.length; j++) {
-      m += disFun[cluster1[i]][cluster2[j]];
-    }
-  }
-  return m / (cluster1.length * cluster2.length);
+function averageLink(dKI, dKJ, dIJ, ni, nj) {
+  const ai = ni / (ni + nj);
+  const aj = nj / (ni + nj);
+  return ai * dKI + aj * dKJ;
 }
 
-/**
- * @private
- * @param cluster1
- * @param cluster2
- * @param disFun
- * @returns {*}
- */
-function centroidLink(cluster1, cluster2, disFun) {
-  var dist = new Array(cluster1.length * cluster2.length);
-  for (var i = 0; i < cluster1.length; i++) {
-    for (var j = 0; j < cluster2.length; j++) {
-      dist[i * cluster2.length + j] = disFun[cluster1[i]][cluster2[j]];
-    }
-  }
-  return median(dist);
+function weightedAverageLink(dKI, dKJ) {
+  return (dKI + dKJ) / 2;
 }
 
-/**
- * @private
- * @param cluster1
- * @param cluster2
- * @param disFun
- * @returns {number}
- */
-function wardLink(cluster1, cluster2, disFun) {
-  return (
-    (centroidLink(cluster1, cluster2, disFun) *
-      cluster1.length *
-      cluster2.length) /
-    (cluster1.length + cluster2.length)
-  );
+function centroidLink(dKI, dKJ, dIJ, ni, nj) {
+  const ai = ni / (ni + nj);
+  const aj = nj / (ni + nj);
+  const b = -(ni * nj) / (ni + nj) ** 2;
+  return ai * dKI + aj * dKJ + b * dIJ;
+}
+
+function medianLink(dKI, dKJ, dIJ) {
+  return dKI / 2 + dKJ / 2 - dIJ / 4;
+}
+
+function wardLink(dKI, dKJ, dIJ, ni, nj, nk) {
+  const ai = (ni + nk) / (ni + nj + nk);
+  const aj = (nj + nk) / (ni + nj + nk);
+  const b = -nk / (ni + nj + nk);
+  return ai * dKI + aj * dKJ + b * dIJ;
+}
+
+function wardLink2(dKI, dKJ, dIJ, ni, nj, nk) {
+  const ai = (ni + nk) / (ni + nj + nk);
+  const aj = (nj + nk) / (ni + nj + nk);
+  const b = -nk / (ni + nj + nk);
+  return Math.sqrt(ai * dKI * dKI + aj * dKJ * dKJ + b * dIJ * dIJ);
 }
 
 /**
  * Continuously merge nodes that have the least dissimilarity
- * @param {Array<Array<number>>} distance - Array of points to be clustered
+ * @param {Array<Array<number>>} data - Array of points to be clustered
  * @param {object} [options]
  * @param {Function} [options.distanceFunction]
- * @param {string} [options.method]
- * @param {boolean} [options.isDistanceMatrix]
- * @option isDistanceMatrix: Is the input a distance matrix?
+ * @param {string} [options.method] - Default: `'complete'`
+ * @param {boolean} [options.isDistanceMatrix] - Is the input already a distance matrix?
  * @constructor
  */
 export function agnes(data, options = {}) {
   const {
     distanceFunction = euclidean,
-    method = 'single',
+    method = 'complete',
     isDistanceMatrix = false,
   } = options;
-  let methodFunc;
 
-  var len = data.length;
-  var distance = data; // If source
+  let updateFunc;
   if (!isDistanceMatrix) {
-    distance = distanceMatrix(data, distanceFunction);
+    data = getDistanceMatrix(data, distanceFunction);
   }
+  let distanceMatrix = new Matrix(data);
+  const numLeaves = distanceMatrix.rows;
 
   // allows to use a string or a given function
   if (typeof method === 'string') {
-    switch (method) {
+    switch (method.toLowerCase()) {
       case 'single':
-        methodFunc = simpleLink;
+        updateFunc = singleLink;
         break;
       case 'complete':
-        methodFunc = completeLink;
+        updateFunc = completeLink;
         break;
       case 'average':
-        methodFunc = averageLink;
+      case 'upgma':
+        updateFunc = averageLink;
+        break;
+      case 'wpgma':
+        updateFunc = weightedAverageLink;
         break;
       case 'centroid':
-        methodFunc = centroidLink;
+      case 'upgmc':
+        updateFunc = centroidLink;
+        break;
+      case 'median':
+      case 'wpgmc':
+        updateFunc = medianLink;
         break;
       case 'ward':
-        methodFunc = wardLink;
+        updateFunc = wardLink;
+        break;
+      case 'ward2':
+        updateFunc = wardLink2;
         break;
       default:
         throw new RangeError(`unknown clustering method: ${method}`);
@@ -140,88 +107,84 @@ export function agnes(data, options = {}) {
     throw new TypeError('method must be a string or function');
   }
 
-  var list = new Array(len);
-  for (var i = 0; i < distance.length; i++) {
-    list[i] = new ClusterLeaf(i);
+  let clusters = [];
+  for (let i = 0; i < numLeaves; i++) {
+    const cluster = new Cluster();
+    cluster.isLeaf = true;
+    cluster.index = i;
+    clusters.push(cluster);
   }
-  var min = 10e5;
-  var d = {};
-  var dis = 0;
 
-  while (list.length > 1) {
-    // calculates the minimum distance
-    d = {};
-    min = 10e5;
-    for (var j = 0; j < list.length; j++) {
-      for (var k = j + 1; k < list.length; k++) {
-        var fdistance, sdistance;
-        if (list[j] instanceof ClusterLeaf) {
-          fdistance = [list[j].index];
+  for (let n = 0; n < numLeaves - 1; n++) {
+    const [row, column, distance] = getSmallestDistance(distanceMatrix);
+    const cluster1 = clusters[row];
+    const cluster2 = clusters[column];
+    const newCluster = new Cluster();
+    newCluster.size = cluster1.size + cluster2.size;
+    newCluster.children.push(cluster1, cluster2);
+    newCluster.height = distance;
+
+    const newClusters = [newCluster];
+    const newDistanceMatrix = new Matrix(
+      distanceMatrix.rows - 1,
+      distanceMatrix.rows - 1,
+    );
+    const previous = (newIndex) =>
+      getPreviousIndex(newIndex, Math.min(row, column), Math.max(row, column));
+
+    for (let i = 1; i < newDistanceMatrix.rows; i++) {
+      const prevI = previous(i);
+      const prevICluster = clusters[prevI];
+      newClusters.push(prevICluster);
+      for (let j = 0; j < i; j++) {
+        if (j === 0) {
+          const dKI = distanceMatrix.get(row, prevI);
+          const dKJ = distanceMatrix.get(prevI, column);
+          const val = updateFunc(
+            dKI,
+            dKJ,
+            distance,
+            cluster1.size,
+            cluster2.size,
+            prevICluster.size,
+          );
+          newDistanceMatrix.set(i, j, val);
+          newDistanceMatrix.set(j, i, val);
         } else {
-          fdistance = new Array(list[j].index.length);
-          for (var e = 0; e < fdistance.length; e++) {
-            fdistance[e] = list[j].index[e].index;
-          }
+          // Just copy distance from previous matrix
+          const val = distanceMatrix.get(prevI, previous(j));
+          newDistanceMatrix.set(i, j, val);
+          newDistanceMatrix.set(j, i, val);
         }
-        if (list[k] instanceof ClusterLeaf) {
-          sdistance = [list[k].index];
-        } else {
-          sdistance = new Array(list[k].index.length);
-          for (var f = 0; f < sdistance.length; f++) {
-            sdistance[f] = list[k].index[f].index;
-          }
-        }
-        dis = methodFunc(fdistance, sdistance, distance).toFixed(4);
-        if (dis in d) {
-          d[dis].push([list[j], list[k]]);
-        } else {
-          d[dis] = [[list[j], list[k]]];
-        }
-        min = Math.min(dis, min);
       }
     }
-    // cluster dots
-    var dmin = d[min.toFixed(4)];
-    var clustered = new Array(dmin.length);
-    var count = 0;
-    while (dmin.length > 0) {
-      let aux = dmin.shift();
-      const filterInt = (n) => {
-        return aux.indexOf(n) !== -1;
-      };
-      const filterDiff = (n) => {
-        return aux.indexOf(n) === -1;
-      };
-      for (var q = 0; q < dmin.length; q++) {
-        var int = dmin[q].filter(filterInt);
-        if (int.length > 0) {
-          var diff = dmin[q].filter(filterDiff);
-          aux = aux.concat(diff);
-          dmin.splice(q--, 1);
-        }
-      }
-      clustered[count++] = aux;
-    }
-    clustered.length = count;
 
-    for (var ii = 0; ii < clustered.length; ii++) {
-      var obj = new Cluster();
-      obj.children = clustered[ii].concat();
-      obj.distance = min;
-      obj.index = new Array(len);
-      var indCount = 0;
-      for (var jj = 0; jj < clustered[ii].length; jj++) {
-        if (clustered[ii][jj] instanceof ClusterLeaf) {
-          obj.index[indCount++] = clustered[ii][jj];
-        } else {
-          indCount += clustered[ii][jj].index.length;
-          obj.index = clustered[ii][jj].index.concat(obj.index);
-        }
-        list.splice(list.indexOf(clustered[ii][jj]), 1);
+    clusters = newClusters;
+    distanceMatrix = newDistanceMatrix;
+  }
+
+  return clusters[0];
+}
+
+function getSmallestDistance(distance) {
+  let smallest = Infinity;
+  let smallestI = 0;
+  let smallestJ = 0;
+  for (let i = 1; i < distance.rows; i++) {
+    for (let j = 0; j < i; j++) {
+      if (distance.get(i, j) < smallest) {
+        smallest = distance.get(i, j);
+        smallestI = i;
+        smallestJ = j;
       }
-      obj.index.length = indCount;
-      list.push(obj);
     }
   }
-  return list[0];
+  return [smallestI, smallestJ, smallest];
+}
+
+function getPreviousIndex(newIndex, prev1, prev2) {
+  newIndex -= 1;
+  if (newIndex >= prev1) newIndex++;
+  if (newIndex >= prev2) newIndex++;
+  return newIndex;
 }

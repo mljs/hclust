@@ -2,8 +2,14 @@ export type AgglomerationMethod =
   | 'single'
   | 'complete'
   | 'average'
+  | 'upgma'
+  | 'wpgma'
+  | 'median'
+  | 'wpgmc'
   | 'centroid'
-  | 'ward';
+  | 'upgmc'
+  | 'ward'
+  | 'ward2';
 
 export interface AgnesOptions<T> {
   distanceFunction?: (a: T, b: T) => number;
@@ -11,23 +17,20 @@ export interface AgnesOptions<T> {
   isDistanceMatrix?: boolean;
 }
 
-export interface DianaOptions<T> {
-  distanceFunction?: (a: T, b: T) => number;
-}
+// export interface DianaOptions<T> {
+//   distanceFunction?: (a: T, b: T) => number;
+// }
 
 export interface Cluster {
   children: Cluster[];
-  distance: number;
-  index: ClusterLeaf[];
-  cut: (threshold: number) => Cluster[];
-  group: (minGroups: number) => Cluster;
-  traverse: (cb: (cluster: Cluster) => void) => void;
-}
-
-export interface ClusterLeaf extends Cluster {
-  children: [];
-  distance: 0;
+  height: number;
+  size: number;
   index: number;
+  isLeaf: boolean;
+  cut: (threshold: number) => Cluster[];
+  group: (groups: number) => Cluster;
+  traverse: (cb: (cluster: Cluster) => void) => void;
+  indices: () => number[];
 }
 
 export function agnes<T = number[]>(
@@ -35,7 +38,7 @@ export function agnes<T = number[]>(
   options?: AgnesOptions<T>,
 ): Cluster;
 
-export function diana<T = number[]>(
-  data: T[],
-  options?: DianaOptions<T>,
-): Cluster;
+// export function diana<T = number[]>(
+//   data: T[],
+//   options?: DianaOptions<T>,
+// ): Cluster;
