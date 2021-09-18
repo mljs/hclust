@@ -1,6 +1,5 @@
 import * as data from '../../testData';
-
-import { agnes } from '..';
+import { agnes, Cluster } from '..';
 
 test('size', () => {
   const clust = agnes(data.features1);
@@ -43,4 +42,9 @@ test('traverse, isLeaf and index', () => {
   });
   expect(other).toBe(9);
   expect(leaves).toBe(10);
+});
+
+test('class access', () => {
+  const clust = new Cluster();
+  expect(clust.children).toStrictEqual([]);
 });
