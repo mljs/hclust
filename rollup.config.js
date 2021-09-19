@@ -4,5 +4,10 @@ export default {
     file: 'hclust.js',
     format: 'cjs',
   },
-  external: ['ml-distance-euclidean', 'ml-distance-matrix', 'heap'],
+  external: [
+    'ml-distance-euclidean',
+    'ml-distance-matrix',
+    'ml-matrix',
+    'heap',
+  ],
 };
