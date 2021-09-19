@@ -1,6 +1,5 @@
-import * as data from '../../testData';
-
 import { agnes } from '..';
+import * as data from '../../testData';
 
 test('AGNES with feature matrix', () => {
   const clust = agnes(data.features1);
@@ -8,7 +7,7 @@ test('AGNES with feature matrix', () => {
 });
 
 test('AGNES with distance matrix', () => {
-  var clust = agnes(data.distanceMatrix1, { isDistanceMatrix: true });
+  const clust = agnes(data.distanceMatrix1, { isDistanceMatrix: true });
   expect(clust.height).toBeCloseTo(7.2111, 4);
 });
 

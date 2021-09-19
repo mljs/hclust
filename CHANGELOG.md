@@ -1,3 +1,5 @@
+# Changelog
+
 # [3.0.0](https://github.com/mljs/hclust/compare/v2.0.3...v3.0.0) (2019-07-16)
 
 

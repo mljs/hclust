@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-disabled-tests */
 // import * as data from '../../testData';
 
 // import { agnes, diana } from '..';

@@ -51,14 +51,14 @@ export default class Cluster {
     heap.push(this);
 
     while (heap.size() < groups) {
-      var first = heap.pop();
+      const first = heap.pop();
       if (first.children.length === 0) {
         break;
       }
       first.children.forEach((child) => heap.push(child));
     }
 
-    var root = new Cluster();
+    const root = new Cluster();
     root.children = heap.toArray();
     root.height = this.height;
 

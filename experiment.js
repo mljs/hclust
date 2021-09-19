@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { agnes } from './src';
 
 const d = [

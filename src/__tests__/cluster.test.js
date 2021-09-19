@@ -1,5 +1,5 @@
-import * as data from '../../testData';
 import { agnes, Cluster } from '..';
+import * as data from '../../testData';
 
 test('size', () => {
   const clust = agnes(data.features1);

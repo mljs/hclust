@@ -1,7 +1,8 @@
 # hclust
 
 [![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
+[![build status][ci-image]][ci-url]
+[![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 
 Hierarchical clustering algorithms in JavaScript.
@@ -48,9 +49,11 @@ npm test
 
 [MIT](./LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/ml-hclust.svg?style=flat-square
+[npm-image]: https://img.shields.io/npm/v/ml-hclust.svg
 [npm-url]: https://npmjs.org/package/ml-hclust
-[travis-image]: https://img.shields.io/travis/mljs/hclust/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/mljs/hclust
-[download-image]: https://img.shields.io/npm/dm/ml-hclust.svg?style=flat-square
+[codecov-image]: https://img.shields.io/codecov/c/github/mljs/hclust.svg
+[codecov-url]: https://codecov.io/gh/mljs/hclust
+[ci-image]: https://github.com/mljs/hclust/workflows/Node.js%20CI/badge.svg?branch=master
+[ci-url]: https://github.com/mljs/hclust/actions?query=workflow%3A%22Node.js+CI%22
+[download-image]: https://img.shields.io/npm/dm/ml-hclust.svg
 [download-url]: https://npmjs.org/package/ml-hclust
