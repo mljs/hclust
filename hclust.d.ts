@@ -21,7 +21,7 @@ export interface AgnesOptions<T> {
 //   distanceFunction?: (a: T, b: T) => number;
 // }
 
-export interface Cluster {
+export class Cluster {
   children: Cluster[];
   height: number;
   size: number;
