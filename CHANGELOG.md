@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/mljs/hclust/compare/v3.0.0...v3.1.0) (2021-09-19)
+
+
+### Features
+
+* export Cluster class ([#13](https://github.com/mljs/hclust/pull/13))
+
 # [3.0.0](https://github.com/mljs/hclust/compare/v2.0.3...v3.0.0) (2019-07-16)
 
 
