@@ -78,6 +78,7 @@ export default class Cluster {
         }
       }
     }
+
     visit(this, cb);
   }
 
