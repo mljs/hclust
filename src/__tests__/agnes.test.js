@@ -24,7 +24,7 @@ test('AGNES centroid', () => {
 
   clust.traverse((node) => {
     expect(typeof node.height).toBe('number');
-    expect(node.height).not.toBe(NaN);
+    expect(node.height).not.toBeNaN();
     expect(node.height).not.toBeLessThan(0);
   });
 });
