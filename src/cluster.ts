@@ -1,6 +1,12 @@
 import Heap from 'heap';
 
-export default class Cluster {
+export class Cluster {
+  children: Cluster[];
+  height: number;
+  size: number;
+  index: number;
+  isLeaf: boolean;
+
   constructor() {
     this.children = [];
     this.height = 0;
@@ -10,21 +16,21 @@ export default class Cluster {
   }
 
   /**
-   * Creates an array of clusters where the maximum height is smaller than the threshold
-   * @param {number} threshold
-   * @returns {Array<Cluster>}
+   * Creates an array of clusters where the maximum height is smaller than the threshold.
+   * @param threshold
+   * @returns The cut clusters.
    */
-  cut(threshold) {
+  cut(threshold: number): Cluster[] {
     if (typeof threshold !== 'number') {
       throw new TypeError('threshold must be a number');
     }
     if (threshold < 0) {
       throw new RangeError('threshold must be a positive number');
     }
-    let list = [this];
-    const ans = [];
+    let list: Cluster[] = [this];
+    const ans: Cluster[] = [];
     while (list.length > 0) {
-      const aux = list.shift();
+      const aux = list.shift() as Cluster;
       if (threshold >= aux.height) {
         ans.push(aux);
       } else {
@@ -36,22 +42,22 @@ export default class Cluster {
 
   /**
    * Merge the leaves in the minimum way to have `groups` number of clusters.
-   * @param {number} groups - Them number of children the first level of the tree should have.
-   * @returns {Cluster}
+   * @param groups - Them number of children the first level of the tree should have.
+   * @returns
    */
-  group(groups) {
+  group(groups: number): Cluster {
     if (!Number.isInteger(groups) || groups < 1) {
       throw new RangeError('groups must be a positive integer');
     }
 
-    const heap = new Heap((a, b) => {
+    const heap = new Heap<Cluster>((a, b) => {
       return b.height - a.height;
     });
 
     heap.push(this);
 
     while (heap.size() < groups) {
-      const first = heap.pop();
+      const first = heap.pop() as Cluster;
       if (first.children.length === 0) {
         break;
       }
@@ -69,10 +75,10 @@ export default class Cluster {
 
   /**
    * Traverses the tree depth-first and calls the provided callback with each individual node
-   * @param {function} cb - The callback to be called on each node encounter
+   * @param cb - The callback to be called on each node encounter
    */
-  traverse(cb) {
-    function visit(root, callback) {
+  traverse(cb: (cluster: Cluster) => void) {
+    function visit(root: Cluster, callback: (cluster: Cluster) => void) {
       callback(root);
       if (root.children) {
         for (const child of root.children) {
@@ -87,10 +93,10 @@ export default class Cluster {
   /**
    * Returns a list of indices for all the leaves of this cluster.
    * The list is ordered in such a way that a dendrogram could be drawn without crossing branches.
-   * @returns {Array<number>}
+   * @returns
    */
-  indices() {
-    const result = [];
+  indices(): number[] {
+    const result: number[] = [];
     this.traverse((cluster) => {
       if (cluster.isLeaf) {
         result.push(cluster.index);

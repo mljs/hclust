@@ -1,6 +1,7 @@
-export * from './agnes';
+export * from './agnes.ts';
+export * from './cluster.ts';
+
 // export * from './diana';
 // export * from './birch';
 // export * './cure';
 // export * from './chameleon';
-export { default as Cluster } from './Cluster';

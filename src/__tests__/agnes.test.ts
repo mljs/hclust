@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 
-import { agnes } from '..';
-import * as data from '../../testData';
+import * as data from '../../test_data.ts';
+import { agnes } from '../index.ts';
 
 test('AGNES with feature matrix', () => {
   const clust = agnes(data.features1);

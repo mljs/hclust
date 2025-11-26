@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
-import { agnes } from './src';
+
+import { agnes } from './src/index.ts';
 
 const d = [
   [0, 17, 21, 31, 23],
@@ -14,7 +15,7 @@ const c = agnes(d, {
   isDistanceMatrix: true,
 });
 
-const heights = [];
+const heights: number[] = [];
 c.traverse((cluster) => {
   if (cluster.isLeaf) {
     console.log(cluster.index + 1);
