@@ -1,30 +1,9 @@
 {
   "name": "ml-hclust",
   "version": "3.1.0",
+  "license": "MIT",
   "description": "Hierarchical clustering algorithms",
-  "main": "hclust.js",
-  "module": "src/index.js",
-  "types": "hclust.d.ts",
-  "sideEffects": false,
-  "files": [
-    "hclust.js",
-    "hclust.d.ts",
-    "src"
-  ],
-  "scripts": {
-    "compile": "rollup -c",
-    "eslint": "eslint .",
-    "eslint-fix": "eslint . --fix",
-    "prepack": "npm run compile",
-    "prettier": "prettier --check .",
-    "prettier-write": "prettier --write .",
-    "test": "npm run test-only && npm run eslint && npm run prettier",
-    "test-only": "vitest run --coverage"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mljs/hclust"
-  },
+  "author": "Miguel Asencio",
   "keywords": [
     "cluster",
     "kmeans",
@@ -35,24 +14,51 @@
     "machine",
     "learning"
   ],
-  "author": "Miguel Asencio",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mljs/hclust/issues"
+  "type": "module",
+  "exports": {
+    ".": "./lib/index.js"
   },
-  "homepage": "https://github.com/mljs/hclust",
-  "devDependencies": {
-    "@vitest/coverage-v8": "^4.0.14",
-    "eslint": "^9.39.1",
-    "eslint-config-cheminfo": "^17.0.0",
-    "prettier": "^3.6.2",
-    "rollup": "^2.68.0",
-    "vitest": "^4.0.14"
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "clean": "rimraf coverage lib",
+    "eslint": "eslint .",
+    "eslint-fix": "eslint . --fix",
+    "prepack": "npm run tsc",
+    "prettier": "prettier --check .",
+    "prettier-write": "prettier --write .",
+    "test": "npm run test-only && npm run check-types && npm run eslint && npm run prettier",
+    "test-only": "vitest run --coverage",
+    "tsc": "npm run clean && npm run tsc-build",
+    "tsc-build": "tsc --project tsconfig.build.json"
   },
   "dependencies": {
     "heap": "^0.2.7",
-    "ml-distance-euclidean": "^2.0.0",
+    "ml-distance-euclidean": "^3.0.1",
     "ml-distance-matrix": "^2.0.1",
-    "ml-matrix": "^6.9.0"
-  }
+    "ml-matrix": "^6.12.1"
+  },
+  "devDependencies": {
+    "@types/heap": "^0.2.35",
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.14",
+    "@zakodium/tsconfig": "^1.0.2",
+    "eslint": "^9.39.1",
+    "eslint-config-cheminfo-typescript": "^21.0.1",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mljs/hclust"
+  },
+  "bugs": {
+    "url": "https://github.com/mljs/hclust/issues"
+  },
+  "homepage": "https://github.com/mljs/hclust"
 }

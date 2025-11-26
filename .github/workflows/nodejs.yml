@@ -11,4 +11,4 @@ jobs:
     # Documentation: https://github.com/zakodium/workflows#nodejs-ci
     uses: zakodium/workflows/.github/workflows/nodejs.yml@nodejs-v1
     with:
-      lint-check-types: false
+      lint-check-types: true

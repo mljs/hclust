@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 
-import { Cluster, agnes } from '..';
-import * as data from '../../testData';
+import * as data from '../../test_data.ts';
+import { Cluster, agnes } from '../index.ts';
 
 test('size', () => {
   const clust = agnes(data.features1);
