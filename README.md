@@ -53,7 +53,7 @@ npm test
 [npm-url]: https://npmjs.org/package/ml-hclust
 [codecov-image]: https://img.shields.io/codecov/c/github/mljs/hclust.svg
 [codecov-url]: https://codecov.io/gh/mljs/hclust
-[ci-image]: https://github.com/mljs/hclust/workflows/Node.js%20CI/badge.svg?branch=master
+[ci-image]: https://github.com/mljs/hclust/workflows/Node.js%20CI/badge.svg?branch=main
 [ci-url]: https://github.com/mljs/hclust/actions?query=workflow%3A%22Node.js+CI%22
 [download-image]: https://img.shields.io/npm/dm/ml-hclust.svg
 [download-url]: https://npmjs.org/package/ml-hclust
