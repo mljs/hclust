@@ -1,3 +1,5 @@
+import { expect, test } from 'vitest';
+
 import { agnes } from '..';
 import * as data from '../../testData';
 
