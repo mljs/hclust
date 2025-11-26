@@ -19,7 +19,7 @@
     "prettier": "prettier --check src",
     "prettier-write": "prettier --write src",
     "test": "npm run test-only && npm run eslint && npm run prettier",
-    "test-only": "jest --coverage"
+    "test-only": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
@@ -42,12 +42,12 @@
   },
   "homepage": "https://github.com/mljs/hclust",
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.16.8",
+    "@vitest/coverage-v8": "^4.0.14",
     "eslint": "^8.10.0",
     "eslint-config-cheminfo": "^7.2.2",
-    "jest": "^27.5.1",
     "prettier": "^2.5.1",
-    "rollup": "^2.68.0"
+    "rollup": "^2.68.0",
+    "vitest": "^4.0.14"
   },
   "dependencies": {
     "heap": "^0.2.7",
