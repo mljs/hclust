@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/mljs/hclust/compare/v3.1.0...v4.0.0) (2025-11-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to native ESM and TypeScript
+
+### Code Refactoring
+
+* migrate to native ESM and TypeScript ([08795b3](https://github.com/mljs/hclust/commit/08795b3dd97810e7884d8b0ae9a30167420d3023))
+
 ## [3.1.0](https://github.com/mljs/hclust/compare/v3.0.0...v3.1.0) (2021-09-19)
 
 
@@ -136,6 +147,3 @@
 
 <a name="0.1.0"></a>
 # 0.1.0 (2015-07-01)
-
-
-
