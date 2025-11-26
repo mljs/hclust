@@ -16,8 +16,8 @@
     "eslint": "eslint .",
     "eslint-fix": "npm run eslint -- --fix",
     "prepack": "npm run compile",
-    "prettier": "prettier --check src",
-    "prettier-write": "prettier --write src",
+    "prettier": "prettier --check .",
+    "prettier-write": "prettier --write .",
     "test": "npm run test-only && npm run eslint && npm run prettier",
     "test-only": "vitest run --coverage"
   },
@@ -45,7 +45,7 @@
     "@vitest/coverage-v8": "^4.0.14",
     "eslint": "^8.10.0",
     "eslint-config-cheminfo": "^7.2.2",
-    "prettier": "^2.5.1",
+    "prettier": "^3.6.2",
     "rollup": "^2.68.0",
     "vitest": "^4.0.14"
   },
