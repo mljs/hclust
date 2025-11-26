@@ -54,7 +54,6 @@ function wardLink2(dKI, dKJ, dIJ, ni, nj, nk) {
  * @param {Function} [options.distanceFunction]
  * @param {string} [options.method] - Default: `'complete'`
  * @param {boolean} [options.isDistanceMatrix] - Is the input already a distance matrix?
- * @constructor
  */
 export function agnes(data, options = {}) {
   const {
@@ -117,6 +116,7 @@ export function agnes(data, options = {}) {
 
   for (let n = 0; n < numLeaves - 1; n++) {
     const [row, column, distance] = getSmallestDistance(distanceMatrix);
+
     const cluster1 = clusters[row];
     const cluster2 = clusters[column];
     const newCluster = new Cluster();
@@ -129,11 +129,9 @@ export function agnes(data, options = {}) {
       distanceMatrix.rows - 1,
       distanceMatrix.rows - 1,
     );
-    const previous = (newIndex) =>
-      getPreviousIndex(newIndex, Math.min(row, column), Math.max(row, column));
 
     for (let i = 1; i < newDistanceMatrix.rows; i++) {
-      const prevI = previous(i);
+      const prevI = previous(i, row, column);
       const prevICluster = clusters[prevI];
       newClusters.push(prevICluster);
       for (let j = 0; j < i; j++) {
@@ -152,7 +150,7 @@ export function agnes(data, options = {}) {
           newDistanceMatrix.set(j, i, val);
         } else {
           // Just copy distance from previous matrix
-          const val = distanceMatrix.get(prevI, previous(j));
+          const val = distanceMatrix.get(prevI, previous(j, row, column));
           newDistanceMatrix.set(i, j, val);
           newDistanceMatrix.set(j, i, val);
         }
@@ -180,6 +178,14 @@ function getSmallestDistance(distance) {
     }
   }
   return [smallestI, smallestJ, smallest];
+}
+
+function previous(newIndex, row, column) {
+  return getPreviousIndex(
+    newIndex,
+    Math.min(row, column),
+    Math.max(row, column),
+  );
 }
 
 function getPreviousIndex(newIndex, prev1, prev2) {
