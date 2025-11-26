@@ -1,15 +1,17 @@
-# hclust
+# ml-hclust
 
-[![NPM version][npm-image]][npm-url]
-[![build status][ci-image]][ci-url]
-[![Test coverage][codecov-image]][codecov-url]
-[![npm download][download-image]][download-url]
+[![NPM version](https://img.shields.io/npm/v/ml-hclust.svg)](https://www.npmjs.com/package/ml-hclust)
+[![npm download](https://img.shields.io/npm/dm/ml-hclust.svg)](https://www.npmjs.com/package/ml-hclust)
+[![test coverage](https://img.shields.io/codecov/c/github/mljs/hclust.svg)](https://codecov.io/gh/mljs/hclust)
+[![license](https://img.shields.io/npm/l/ml-hclust.svg)](https://github.com/mljs/hclust/blob/main/LICENSE)
 
 Hierarchical clustering algorithms in JavaScript.
 
 ## Installation
 
-`npm i ml-hclust`
+```console
+npm install ml-hclust
+```
 
 ## [API Documentation](https://mljs.github.io/hclust/)
 
@@ -48,12 +50,3 @@ npm test
 ## License
 
 [MIT](./LICENSE)
-
-[npm-image]: https://img.shields.io/npm/v/ml-hclust.svg
-[npm-url]: https://npmjs.org/package/ml-hclust
-[codecov-image]: https://img.shields.io/codecov/c/github/mljs/hclust.svg
-[codecov-url]: https://codecov.io/gh/mljs/hclust
-[ci-image]: https://github.com/mljs/hclust/workflows/Node.js%20CI/badge.svg?branch=main
-[ci-url]: https://github.com/mljs/hclust/actions?query=workflow%3A%22Node.js+CI%22
-[download-image]: https://img.shields.io/npm/dm/ml-hclust.svg
-[download-url]: https://npmjs.org/package/ml-hclust
