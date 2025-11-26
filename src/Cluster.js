@@ -12,7 +12,7 @@ export default class Cluster {
   /**
    * Creates an array of clusters where the maximum height is smaller than the threshold
    * @param {number} threshold
-   * @return {Array<Cluster>}
+   * @returns {Array<Cluster>}
    */
   cut(threshold) {
     if (typeof threshold !== 'number') {
@@ -37,7 +37,7 @@ export default class Cluster {
   /**
    * Merge the leaves in the minimum way to have `groups` number of clusters.
    * @param {number} groups - Them number of children the first level of the tree should have.
-   * @return {Cluster}
+   * @returns {Cluster}
    */
   group(groups) {
     if (!Number.isInteger(groups) || groups < 1) {
@@ -55,7 +55,9 @@ export default class Cluster {
       if (first.children.length === 0) {
         break;
       }
-      first.children.forEach((child) => heap.push(child));
+      for (const child of first.children) {
+        heap.push(child);
+      }
     }
 
     const root = new Cluster();

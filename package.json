@@ -14,7 +14,7 @@
   "scripts": {
     "compile": "rollup -c",
     "eslint": "eslint .",
-    "eslint-fix": "npm run eslint -- --fix",
+    "eslint-fix": "eslint . --fix",
     "prepack": "npm run compile",
     "prettier": "prettier --check .",
     "prettier-write": "prettier --write .",
@@ -43,8 +43,8 @@
   "homepage": "https://github.com/mljs/hclust",
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.14",
-    "eslint": "^8.10.0",
-    "eslint-config-cheminfo": "^7.2.2",
+    "eslint": "^9.39.1",
+    "eslint-config-cheminfo": "^17.0.0",
     "prettier": "^3.6.2",
     "rollup": "^2.68.0",
     "vitest": "^4.0.14"
